@@ -1,0 +1,15 @@
+{
+  "name": "IRONLOG — Daily Gym Tracker",
+  "short_name": "IronLog",
+  "description": "Offline gym tracker with a muscle-specific exercise library, set logging, and progress photos.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#121216",
+  "theme_color": "#121216",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any maskable" }
+  ]
+}
