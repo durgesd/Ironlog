@@ -6,10 +6,296 @@
 <meta name="theme-color" content="#121216">
 <meta name="description" content="IRONLOG — offline gym tracker with muscle-specific exercise library and progress photos.">
 <title>IRONLOG — Daily Gym Tracker</title>
-<link rel="manifest" href="manifest.json">
-<link rel="icon" href="icons/icon.svg" type="image/svg+xml">
-<link rel="apple-touch-icon" href="icons/icon-192.png">
-<link rel="stylesheet" href="css/style.css">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+:root{
+  --bg: #121216;
+  --surface: #1b1b21;
+  --surface-2: #232329;
+  --steel: #33333c;
+  --iron: #E8B330;
+  --iron-dim: #a9822b;
+  --rust: #C4482E;
+  --chalk: #EDEAE3;
+  --chalk-dim: #8d8d95;
+  --green: #6FA85B;
+  --radius: 2px;
+}
+
+*{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+html,body{ margin:0; padding:0; }
+body{
+  background:
+    linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,0) 120px),
+    var(--bg);
+  color: var(--chalk);
+  font-family: 'Inter', system-ui, sans-serif;
+  min-height: 100vh;
+  padding-bottom: 90px;
+}
+
+h1,h2,h3,.display{
+  font-family:'Oswald', sans-serif;
+  font-weight:600;
+  letter-spacing: 0.3px;
+  margin:0;
+}
+
+/* ---------- Header ---------- */
+header{
+  padding: 22px 18px 16px;
+  border-bottom: 3px solid var(--iron);
+  background: linear-gradient(180deg, #17171c, #121216);
+  position: sticky; top:0; z-index: 20;
+}
+.brand{ display:flex; align-items:baseline; justify-content:space-between; }
+.brand .logo{ font-family:'Oswald',sans-serif; font-weight:700; font-size:26px; color: var(--chalk); }
+.brand .logo span{ color: var(--iron); }
+.brand .tag{ font-size: 11px; color: var(--chalk-dim); letter-spacing: 1px; }
+
+.date-row{ margin-top: 14px; display:flex; align-items:center; gap: 10px; }
+.date-row button.nav{
+  background: var(--surface-2); border: 1px solid var(--steel);
+  color: var(--chalk); width: 36px; height:36px; font-size:16px;
+  border-radius: var(--radius); cursor:pointer;
+}
+.date-row .date-display{
+  flex:1; text-align:center; font-family:'Oswald',sans-serif; font-size: 16px;
+  background: var(--surface-2); border: 1px solid var(--steel);
+  padding: 8px 6px; border-radius: var(--radius);
+}
+.date-row .date-display small{ display:block; color: var(--chalk-dim); font-size: 11px; font-family:'Inter'; margin-top:2px; }
+.date-row .today-btn{
+  background: transparent; color: var(--iron); border:1px solid var(--iron-dim);
+  font-size: 11px; padding: 8px 10px; border-radius: var(--radius); cursor:pointer;
+}
+
+/* ---------- Main ---------- */
+main{ padding: 18px; max-width: 640px; margin: 0 auto; }
+section{ display:none; }
+section.active{ display:block; animation: fade .25s ease; }
+@keyframes fade{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;} }
+
+.section-title{ display:flex; align-items:center; justify-content:space-between; margin-bottom: 12px; gap: 10px; flex-wrap: wrap; }
+.section-title h2{ font-size:19px; }
+.count-pill{
+  font-size:12px; color: var(--bg); background: var(--iron);
+  padding: 3px 9px; border-radius: 20px; font-family:'Inter'; font-weight:600;
+}
+
+/* ---------- Routine label ---------- */
+.routine-bar{ display:flex; gap:8px; margin-bottom: 16px; overflow-x:auto; padding-bottom:4px; }
+.routine-chip{
+  flex: 0 0 auto; padding: 7px 13px; background: var(--surface-2);
+  border: 1px solid var(--steel); color: var(--chalk-dim);
+  font-family:'Oswald'; font-size:13px; border-radius: var(--radius);
+  cursor:pointer; white-space:nowrap;
+}
+.routine-chip.active{ border-color: var(--iron); color: var(--iron); background: rgba(232,179,48,0.08); }
+
+/* ---------- Exercise Card ---------- */
+.exercise-card{
+  background: var(--surface); border: 1px solid var(--steel);
+  border-left: 4px solid var(--muscle-color, var(--iron));
+  border-radius: var(--radius); margin-bottom: 12px; overflow:hidden;
+}
+.exercise-head{ display:flex; justify-content:space-between; align-items:flex-start; padding: 12px 14px 8px; gap: 8px; }
+.exercise-head .name{ font-family:'Oswald'; font-size:16px; font-weight:600; }
+.exercise-head .muscle-tag{
+  display:inline-flex; align-items:center; gap:5px; font-size:11px; color: var(--chalk-dim);
+  margin-top:4px;
+}
+.exercise-head .muscle-tag .dot{ width:8px; height:8px; border-radius:50%; background: var(--muscle-color, var(--iron)); display:inline-block; }
+.exercise-head .del{ background:none; border:none; color:#5c5c66; font-size:18px; cursor:pointer; padding:4px 6px; flex-shrink:0; }
+
+.set-table{ padding: 0 14px 12px; }
+.set-row{ display:grid; grid-template-columns: 26px 1fr 1fr 30px; gap: 8px; align-items:center; padding: 6px 0; border-top: 1px solid #242429; }
+.set-row.head-row{ border-top:none; font-size:10px; color: var(--chalk-dim); letter-spacing:.5px; padding-bottom:4px; }
+.set-row .set-num{ color: var(--chalk-dim); font-size:13px; text-align:center; font-family:'Oswald'; }
+.set-row input{
+  width:100%; background: var(--surface-2); border:1px solid var(--steel);
+  color: var(--chalk); padding:7px 6px; border-radius: var(--radius);
+  font-family:'Inter'; font-size:14px; text-align:center;
+}
+.set-row input:focus{ outline:none; border-color: var(--iron); }
+.set-row .chk{
+  width:26px; height:26px; border-radius: var(--radius); border:1px solid var(--steel);
+  background: var(--surface-2); cursor:pointer; display:flex; align-items:center; justify-content:center;
+  color: transparent; font-size:14px;
+}
+.set-row .chk.done{ background: var(--green); border-color: var(--green); color:#12210d; }
+
+.add-set-btn{
+  width: calc(100% - 28px); margin: 0 14px 12px; padding:9px; background:transparent;
+  border:1px dashed var(--steel); color: var(--chalk-dim); font-size:12px;
+  border-radius: var(--radius); cursor:pointer;
+}
+
+.add-exercise-btn{
+  width:100%; padding:14px; background: var(--surface); border:1px dashed var(--iron-dim);
+  color: var(--iron); font-family:'Oswald'; font-size:14px; border-radius: var(--radius); cursor:pointer;
+  margin-top: 4px;
+}
+
+.empty-state{ text-align:center; padding: 50px 20px; color: var(--chalk-dim); }
+.empty-state .big{ font-size:40px; margin-bottom:10px; }
+.empty-state p{ font-size:13px; line-height:1.5; max-width:300px; margin:0 auto; }
+
+/* ---------- Notes ---------- */
+.notes-box{ margin-top: 16px; }
+.notes-box label{ font-size:11px; color: var(--chalk-dim); display:block; margin-bottom:6px; letter-spacing:.5px;}
+.notes-box textarea{
+  width:100%; min-height:70px; background: var(--surface); border:1px solid var(--steel);
+  color: var(--chalk); padding:10px; border-radius: var(--radius); font-family:'Inter'; font-size:14px; resize:vertical;
+}
+
+/* ---------- Photos ---------- */
+.photo-upload-btn{
+  display:block; width:100%; padding: 22px; background: var(--surface); border:2px dashed var(--steel);
+  color: var(--chalk-dim); border-radius: var(--radius); cursor:pointer; text-align:center;
+  font-family:'Oswald'; font-size:14px; margin-bottom:16px;
+}
+.photo-upload-btn .sub{ font-family:'Inter'; font-size:11px; color:#666; }
+.photo-upload-btn:active{ border-color: var(--iron); color: var(--iron); }
+.photo-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.photo-item{ position:relative; aspect-ratio: 3/4; border-radius: var(--radius); overflow:hidden; border:1px solid var(--steel); background: var(--surface-2); }
+.photo-item img{ width:100%; height:100%; object-fit:cover; display:block; }
+.photo-item .pdate{
+  position:absolute; bottom:0; left:0; right:0; background: linear-gradient(0deg, rgba(0,0,0,.85), transparent);
+  color: var(--chalk); font-size:9px; padding: 12px 5px 4px; text-align:center;
+}
+.photo-item .pdel{
+  position:absolute; top:3px; right:3px; background: rgba(0,0,0,.6); color:var(--chalk);
+  border:none; border-radius:50%; width:20px; height:20px; font-size:12px; cursor:pointer; line-height:1;
+}
+
+/* ---------- Progress ---------- */
+.stat-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:10px; margin-bottom:18px; }
+.stat-card{ background: var(--surface); border:1px solid var(--steel); border-radius: var(--radius); padding: 14px 8px; text-align:center; }
+.stat-card .num{ font-family:'Oswald'; font-size:24px; color: var(--iron); }
+.stat-card .lbl{ font-size:10px; color: var(--chalk-dim); margin-top:4px; letter-spacing:.4px;}
+
+.range-toggle{ display:flex; gap:4px; }
+.range-toggle button{
+  background: var(--surface-2); border:1px solid var(--steel); color: var(--chalk-dim);
+  font-size:11px; padding: 6px 9px; border-radius: var(--radius); cursor:pointer; font-family:'Inter'; font-weight:600;
+}
+.range-toggle button.active{ background: var(--iron); color: #141410; border-color: var(--iron); }
+
+.muscle-volume-list{ margin-bottom: 4px; }
+.mv-row{ margin-bottom: 10px; }
+.mv-row-top{ display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px; }
+.mv-row-top .mv-name{ display:flex; align-items:center; gap:6px; font-family:'Oswald'; font-size:13px; }
+.mv-row-top .mv-name .dot{ width:8px; height:8px; border-radius:50%; }
+.mv-row-top .mv-val{ color: var(--chalk-dim); }
+.mv-bar-track{ height:8px; background: var(--surface-2); border-radius: 20px; overflow:hidden; }
+.mv-bar-fill{ height:100%; border-radius: 20px; transition: width .3s ease; }
+.hint{ font-size:11px; color: var(--chalk-dim); margin: 4px 0 20px; line-height:1.5; }
+
+.pr-item{
+  display:flex; justify-content:space-between; align-items:center;
+  background: var(--surface); border:1px solid var(--steel); border-left:3px solid var(--muscle-color, var(--iron));
+  border-radius: var(--radius); padding: 11px 14px; margin-bottom:8px;
+}
+.pr-item .pn{ font-family:'Oswald'; font-size:14px; }
+.pr-item .pm{ font-size:10px; color: var(--chalk-dim); margin-top:2px; }
+.pr-item .pv{ font-family:'Oswald'; font-size:16px; color: var(--iron); text-align:right; }
+.pr-item .pd{ font-size:9px; color: var(--chalk-dim); text-align:right; }
+
+.history-item{
+  background: var(--surface); border:1px solid var(--steel); border-left:3px solid var(--steel);
+  border-radius: var(--radius); padding: 12px 14px; margin-bottom:8px;
+  display:flex; justify-content:space-between; align-items:center; cursor:pointer;
+}
+.history-item.has-log{ border-left-color: var(--iron); }
+.history-item .hd{ font-family:'Oswald'; font-size:14px; }
+.history-item .hs{ font-size:11px; color: var(--chalk-dim); margin-top:2px; }
+.history-item .harrow{ color: var(--chalk-dim); }
+
+/* ---------- Bottom Nav ---------- */
+nav.tabbar{
+  position: fixed; bottom:0; left:0; right:0; background: #17171c; border-top: 1px solid var(--steel);
+  display:flex; z-index: 30; padding-bottom: env(safe-area-inset-bottom);
+}
+nav.tabbar button{
+  flex:1; background:none; border:none; color: var(--chalk-dim);
+  padding: 10px 4px 8px; font-family:'Inter'; font-size:10px; cursor:pointer;
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+}
+nav.tabbar button svg{ width:20px; height:20px; stroke: var(--chalk-dim); fill:none; stroke-width:1.8; }
+nav.tabbar button.active{ color: var(--iron); }
+nav.tabbar button.active svg{ stroke: var(--iron); }
+
+/* ---------- Modal ---------- */
+.modal-backdrop{ position:fixed; inset:0; background: rgba(0,0,0,.6); z-index:50; display:none; align-items:flex-end; justify-content:center; }
+.modal-backdrop.show{ display:flex; }
+.modal{
+  background: var(--surface); width:100%; max-width:640px;
+  border-top: 3px solid var(--iron); border-radius: 10px 10px 0 0;
+  padding: 20px 18px calc(20px + env(safe-area-inset-bottom));
+  max-height: 80vh; overflow-y:auto;
+}
+.modal.modal-tall{ max-height: 85vh; }
+.modal h3{ font-size:17px; margin-bottom:14px; }
+.modal input, .modal select{
+  width:100%; background: var(--surface-2); border:1px solid var(--steel); color:var(--chalk);
+  padding: 12px; border-radius: var(--radius); font-family:'Inter'; font-size:15px; margin-bottom:10px;
+}
+.modal-actions{ display:flex; gap:10px; margin-top:6px; }
+.btn{ flex:1; padding:13px; border-radius: var(--radius); border:none; cursor:pointer; font-family:'Oswald'; font-size:14px; letter-spacing:.3px; }
+.btn-primary{ background: var(--iron); color:#141410; font-weight:600; }
+.btn-ghost{ background: transparent; color: var(--chalk-dim); border:1px solid var(--steel); }
+
+/* ---------- Muscle Picker ---------- */
+.muscle-grid{ display:grid; grid-template-columns: repeat(2, 1fr); gap:8px; margin-bottom: 16px; }
+.muscle-tile{
+  display:flex; align-items:center; gap:9px; padding: 13px 12px;
+  background: var(--surface-2); border:1px solid var(--steel); border-radius: var(--radius);
+  cursor:pointer; font-family:'Oswald'; font-size:14px; color: var(--chalk);
+}
+.muscle-tile .dot{ width:12px; height:12px; border-radius:50%; flex-shrink:0; }
+.muscle-tile .cnt{ margin-left:auto; font-family:'Inter'; font-size:10px; color: var(--chalk-dim); }
+
+.picker-step2-head{ display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+.back-btn{ background:none; border:none; color: var(--iron); font-family:'Oswald'; font-size:13px; cursor:pointer; padding:4px 0; }
+.exercise-picker-list{ max-height: 40vh; overflow-y:auto; margin-bottom: 12px; border-top:1px solid var(--steel); }
+.exercise-pick-item{
+  display:flex; justify-content:space-between; align-items:center;
+  padding: 13px 4px; border-bottom: 1px solid #242429; cursor:pointer;
+}
+.exercise-pick-item .epn{ font-size:14px; }
+.exercise-pick-item .epe{ font-size:10px; color: var(--chalk-dim); margin-top:2px; }
+.exercise-pick-item .epa{ color: var(--iron); font-size:18px; }
+.custom-exercise-row{ display:flex; gap:8px; align-items:flex-start; }
+.custom-exercise-row input{ margin-bottom:0; flex:1; }
+.custom-exercise-row button{ flex: 0 0 auto; padding: 12px 16px; }
+.no-results{ padding: 16px 4px; color: var(--chalk-dim); font-size:13px; text-align:center; }
+
+.toast{
+  position: fixed; bottom: 78px; left:50%; transform: translateX(-50%);
+  background: var(--iron); color:#141410; padding: 10px 18px; border-radius: var(--radius);
+  font-family:'Oswald'; font-size:13px; z-index: 60; opacity:0; pointer-events:none;
+  transition: opacity .25s, transform .25s;
+}
+.toast.show{ opacity:1; transform: translateX(-50%) translateY(-6px); }
+
+.settings-block{ margin-bottom: 22px; }
+.settings-block h3{ font-size:13px; color: var(--chalk-dim); letter-spacing:.5px; margin-bottom:10px; }
+.settings-row{
+  display:flex; justify-content:space-between; align-items:center;
+  background: var(--surface); border:1px solid var(--steel); border-radius: var(--radius);
+  padding: 14px; margin-bottom:8px;
+}
+.settings-row .st-lbl{ font-size:14px; }
+.settings-row .st-sub{ font-size:11px; color: var(--chalk-dim); margin-top:2px; }
+.settings-row button{
+  background: var(--surface-2); border:1px solid var(--steel); color: var(--chalk);
+  padding: 8px 14px; border-radius: var(--radius); font-size:12px; cursor:pointer;
+}
+.settings-row button.danger{ color: var(--rust); border-color: var(--rust); background:transparent; }
+
+</style>
 </head>
 <body>
 
@@ -192,8 +478,817 @@
 
 <div class="toast" id="toast"></div>
 
-<script src="js/exercise-library.js"></script>
-<script src="js/storage.js"></script>
-<script src="js/app.js"></script>
+<script>
+/* ==========================================================================
+   IRONLOG — Exercise Library
+   Exercises grouped by individual muscle for targeted, effective progress.
+   Each muscle has a display color used for chips, bars, and tags.
+   ========================================================================== */
+
+const MUSCLE_GROUPS = [
+  { key: "Chest",      color: "#E8B330" },
+  { key: "Back",       color: "#5FA8D3" },
+  { key: "Shoulders",  color: "#C4482E" },
+  { key: "Biceps",     color: "#8CC084" },
+  { key: "Triceps",    color: "#D98E4A" },
+  { key: "Forearms",   color: "#B79A6B" },
+  { key: "Quads",      color: "#D6564C" },
+  { key: "Hamstrings", color: "#9B6BC7" },
+  { key: "Glutes",     color: "#E06B9F" },
+  { key: "Calves",     color: "#5CBFA6" },
+  { key: "Abs",        color: "#E8D830" },
+  { key: "Cardio",     color: "#6FA85B" }
+];
+
+const EXERCISE_LIBRARY = {
+  Chest: [
+    { name: "Barbell Bench Press",        equipment: "Barbell" },
+    { name: "Incline Barbell Press",       equipment: "Barbell" },
+    { name: "Dumbbell Bench Press",        equipment: "Dumbbell" },
+    { name: "Incline Dumbbell Press",      equipment: "Dumbbell" },
+    { name: "Chest Fly (Dumbbell)",        equipment: "Dumbbell" },
+    { name: "Cable Crossover",             equipment: "Cable" },
+    { name: "Push-Up",                     equipment: "Bodyweight" },
+    { name: "Dips (Chest Focus)",          equipment: "Bodyweight" },
+    { name: "Machine Chest Press",         equipment: "Machine" },
+    { name: "Pec Deck Machine",            equipment: "Machine" }
+  ],
+  Back: [
+    { name: "Deadlift",                    equipment: "Barbell" },
+    { name: "Pull-Up",                     equipment: "Bodyweight" },
+    { name: "Lat Pulldown",                equipment: "Cable" },
+    { name: "Barbell Row",                 equipment: "Barbell" },
+    { name: "Seated Cable Row",            equipment: "Cable" },
+    { name: "One-Arm Dumbbell Row",        equipment: "Dumbbell" },
+    { name: "T-Bar Row",                   equipment: "Barbell" },
+    { name: "Face Pull",                   equipment: "Cable" },
+    { name: "Chin-Up",                     equipment: "Bodyweight" },
+    { name: "Hyperextension",              equipment: "Bodyweight" }
+  ],
+  Shoulders: [
+    { name: "Overhead Press",              equipment: "Barbell" },
+    { name: "Dumbbell Shoulder Press",     equipment: "Dumbbell" },
+    { name: "Lateral Raise",               equipment: "Dumbbell" },
+    { name: "Front Raise",                 equipment: "Dumbbell" },
+    { name: "Rear Delt Fly",               equipment: "Dumbbell" },
+    { name: "Arnold Press",                equipment: "Dumbbell" },
+    { name: "Cable Lateral Raise",         equipment: "Cable" },
+    { name: "Upright Row",                 equipment: "Barbell" },
+    { name: "Shrugs",                      equipment: "Dumbbell" }
+  ],
+  Biceps: [
+    { name: "Barbell Curl",                equipment: "Barbell" },
+    { name: "Dumbbell Curl",               equipment: "Dumbbell" },
+    { name: "Hammer Curl",                 equipment: "Dumbbell" },
+    { name: "Preacher Curl",               equipment: "Barbell" },
+    { name: "Incline Dumbbell Curl",       equipment: "Dumbbell" },
+    { name: "Cable Curl",                  equipment: "Cable" },
+    { name: "Concentration Curl",          equipment: "Dumbbell" }
+  ],
+  Triceps: [
+    { name: "Close-Grip Bench Press",      equipment: "Barbell" },
+    { name: "Tricep Pushdown",             equipment: "Cable" },
+    { name: "Skull Crusher",               equipment: "Barbell" },
+    { name: "Overhead Tricep Extension",   equipment: "Dumbbell" },
+    { name: "Dips (Triceps Focus)",        equipment: "Bodyweight" },
+    { name: "Kickback",                    equipment: "Dumbbell" },
+    { name: "Rope Pushdown",               equipment: "Cable" }
+  ],
+  Forearms: [
+    { name: "Wrist Curl",                  equipment: "Barbell" },
+    { name: "Reverse Wrist Curl",          equipment: "Barbell" },
+    { name: "Farmer's Carry",              equipment: "Dumbbell" },
+    { name: "Reverse Curl",                equipment: "Barbell" },
+    { name: "Plate Pinch Hold",            equipment: "Plate" }
+  ],
+  Quads: [
+    { name: "Back Squat",                  equipment: "Barbell" },
+    { name: "Front Squat",                 equipment: "Barbell" },
+    { name: "Leg Press",                   equipment: "Machine" },
+    { name: "Leg Extension",               equipment: "Machine" },
+    { name: "Walking Lunge",               equipment: "Dumbbell" },
+    { name: "Bulgarian Split Squat",       equipment: "Dumbbell" },
+    { name: "Goblet Squat",                equipment: "Dumbbell" },
+    { name: "Hack Squat",                  equipment: "Machine" }
+  ],
+  Hamstrings: [
+    { name: "Romanian Deadlift",           equipment: "Barbell" },
+    { name: "Leg Curl (Lying)",            equipment: "Machine" },
+    { name: "Leg Curl (Seated)",           equipment: "Machine" },
+    { name: "Good Morning",                equipment: "Barbell" },
+    { name: "Stiff-Leg Deadlift",          equipment: "Dumbbell" },
+    { name: "Nordic Curl",                 equipment: "Bodyweight" }
+  ],
+  Glutes: [
+    { name: "Hip Thrust",                  equipment: "Barbell" },
+    { name: "Glute Bridge",                equipment: "Barbell" },
+    { name: "Cable Kickback",              equipment: "Cable" },
+    { name: "Sumo Deadlift",               equipment: "Barbell" },
+    { name: "Step-Up",                     equipment: "Dumbbell" },
+    { name: "Hip Abduction Machine",       equipment: "Machine" }
+  ],
+  Calves: [
+    { name: "Standing Calf Raise",         equipment: "Machine" },
+    { name: "Seated Calf Raise",           equipment: "Machine" },
+    { name: "Donkey Calf Raise",           equipment: "Machine" },
+    { name: "Single-Leg Calf Raise",       equipment: "Bodyweight" }
+  ],
+  Abs: [
+    { name: "Hanging Leg Raise",           equipment: "Bodyweight" },
+    { name: "Cable Crunch",                equipment: "Cable" },
+    { name: "Plank",                       equipment: "Bodyweight" },
+    { name: "Ab Wheel Rollout",            equipment: "Wheel" },
+    { name: "Sit-Up",                      equipment: "Bodyweight" },
+    { name: "Russian Twist",               equipment: "Bodyweight" },
+    { name: "Bicycle Crunch",              equipment: "Bodyweight" }
+  ],
+  Cardio: [
+    { name: "Treadmill Run",               equipment: "Machine" },
+    { name: "Stationary Bike",             equipment: "Machine" },
+    { name: "Rowing Machine",              equipment: "Machine" },
+    { name: "Jump Rope",                   equipment: "Bodyweight" },
+    { name: "Stair Climber",               equipment: "Machine" },
+    { name: "Elliptical",                  equipment: "Machine" }
+  ]
+};
+
+function getMuscleColor(muscleKey){
+  const m = MUSCLE_GROUPS.find(g => g.key === muscleKey);
+  return m ? m.color : "#8d8d95";
+}
+
+</script>
+<script>
+/* ==========================================================================
+   IRONLOG — Storage layer
+   All data lives in localStorage on-device only. Nothing is transmitted.
+   db = {
+     routines: [{id, name}],
+     logs: {
+       'YYYY-MM-DD': {
+         routineId, notes,
+         exercises: [{id, name, muscle, equipment, sets:[{weight,reps,done}]}]
+       }
+     },
+     photos: [{id, date, dataUrl}]
+   }
+   ========================================================================== */
+
+const IronStore = (function(){
+  const STORE_KEY = "ironlog_data_v2";
+
+  function uid(){ return Date.now().toString(36) + Math.random().toString(36).slice(2, 7); }
+
+  function defaultDB(){
+    return {
+      routines: [
+        { id: uid(), name: "Push Day" },
+        { id: uid(), name: "Pull Day" },
+        { id: uid(), name: "Leg Day" }
+      ],
+      logs: {},
+      photos: []
+    };
+  }
+
+  function migrateFromV1(){
+    try{
+      const raw = localStorage.getItem("ironlog_data_v1");
+      if(!raw) return null;
+      const old = JSON.parse(raw);
+      // v1 already matches v2 shape closely; exercises may lack 'equipment'
+      Object.values(old.logs || {}).forEach(log=>{
+        (log.exercises || []).forEach(ex=>{ if(ex.equipment === undefined) ex.equipment = ""; });
+      });
+      return old;
+    }catch(e){ return null; }
+  }
+
+  function load(){
+    try{
+      const raw = localStorage.getItem(STORE_KEY);
+      if(raw) return JSON.parse(raw);
+    }catch(e){ console.warn("IronStore: could not parse data", e); }
+    const migrated = migrateFromV1();
+    if(migrated) return migrated;
+    return defaultDB();
+  }
+
+  let db = load();
+
+  function save(){
+    try{
+      localStorage.setItem(STORE_KEY, JSON.stringify(db));
+      return true;
+    }catch(e){
+      console.warn("IronStore: save failed", e);
+      return false;
+    }
+  }
+
+  function todayStr(d = new Date()){
+    return d.getFullYear() + "-" + String(d.getMonth()+1).padStart(2,'0') + "-" + String(d.getDate()).padStart(2,'0');
+  }
+
+  function getLog(dateStr){
+    if(!db.logs[dateStr]){
+      db.logs[dateStr] = { routineId: null, notes: "", exercises: [] };
+    }
+    return db.logs[dateStr];
+  }
+
+  function replaceDB(newDB){
+    if(!newDB || !newDB.routines || !newDB.logs) throw new Error("Invalid backup format");
+    if(!Array.isArray(newDB.photos)) newDB.photos = [];
+    db = newDB;
+    save();
+  }
+
+  function eraseAll(){
+    localStorage.removeItem(STORE_KEY);
+    db = defaultDB();
+    save();
+  }
+
+  return {
+    get db(){ return db; },
+    uid, todayStr, getLog, save, replaceDB, eraseAll
+  };
+})();
+
+</script>
+<script>
+/* ==========================================================================
+   IRONLOG — App logic
+   Depends on: exercise-library.js, storage.js
+   ========================================================================== */
+(function(){
+  "use strict";
+
+  const $ = (sel, el=document) => el.querySelector(sel);
+  const $all = (sel, el=document) => Array.from(el.querySelectorAll(sel));
+  const { uid, todayStr, getLog, save } = IronStore;
+
+  let currentDate = todayStr();
+  let activeRoutineId = null;
+  let pickerMuscle = null;
+  let currentRange = 7;
+
+  function escapeHtml(s){ const d = document.createElement("div"); d.textContent = s ?? ""; return d.innerHTML; }
+
+  // ---------- Toast ----------
+  let toastTimer;
+  function showToast(msg){
+    const t = $("#toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(()=>t.classList.remove("show"), 1800);
+  }
+
+  // ---------- Date helpers ----------
+  function fmtDateDisplay(dstr){
+    const d = new Date(dstr+"T00:00:00");
+    return d.toLocaleDateString(undefined, { weekday:'long', month:'short', day:'numeric' });
+  }
+  function relativeLabel(dstr){
+    if(dstr === todayStr()) return "TODAY";
+    const y = new Date(); y.setDate(y.getDate()-1);
+    if(dstr === todayStr(y)) return "YESTERDAY";
+    const t = new Date(); t.setDate(t.getDate()+1);
+    if(dstr === todayStr(t)) return "TOMORROW";
+    return new Date(dstr+"T00:00:00").getFullYear() + "";
+  }
+
+  // ---------- Tabs ----------
+  $all(".tabbar .tab").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      $all(".tabbar .tab").forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      $all("main section").forEach(s=>s.classList.remove("active"));
+      $("#"+btn.dataset.tab).classList.add("active");
+      if(btn.dataset.tab === "sec-progress") renderProgress();
+      if(btn.dataset.tab === "sec-settings") renderRoutineEditor();
+      if(btn.dataset.tab === "sec-photos") renderPhotos();
+    });
+  });
+
+  // ---------- Date nav ----------
+  function setDate(dstr){
+    currentDate = dstr;
+    $("#dateDisplay").innerHTML = fmtDateDisplay(dstr) + "<small>"+relativeLabel(dstr)+"</small>";
+    const log = getLog(dstr);
+    activeRoutineId = log.routineId;
+    $("#sessionNotes").value = log.notes || "";
+    renderRoutineBar();
+    renderExercises();
+  }
+  $("#prevDay").addEventListener("click", ()=>{
+    const d = new Date(currentDate+"T00:00:00"); d.setDate(d.getDate()-1);
+    setDate(todayStr(d));
+  });
+  $("#nextDay").addEventListener("click", ()=>{
+    const d = new Date(currentDate+"T00:00:00"); d.setDate(d.getDate()+1);
+    setDate(todayStr(d));
+  });
+  $("#todayBtn").addEventListener("click", ()=> setDate(todayStr()));
+
+  // ---------- Routine bar ----------
+  function renderRoutineBar(){
+    const bar = $("#routineBar");
+    bar.innerHTML = "";
+    IronStore.db.routines.forEach(r=>{
+      const chip = document.createElement("button");
+      chip.className = "routine-chip" + (activeRoutineId===r.id ? " active":"");
+      chip.textContent = r.name;
+      chip.addEventListener("click", ()=>{
+        const log = getLog(currentDate);
+        activeRoutineId = (activeRoutineId===r.id) ? null : r.id;
+        log.routineId = activeRoutineId;
+        save();
+        renderRoutineBar();
+      });
+      bar.appendChild(chip);
+    });
+  }
+
+  // ---------- Exercises ----------
+  function renderExercises(){
+    const log = getLog(currentDate);
+    const list = $("#exerciseList");
+    list.innerHTML = "";
+    $("#exerciseCount").textContent = log.exercises.length + (log.exercises.length===1 ? " exercise":" exercises");
+    $("#emptyWorkout").style.display = log.exercises.length ? "none":"block";
+
+    log.exercises.forEach(ex=>{
+      const color = getMuscleColor(ex.muscle);
+      const card = document.createElement("div");
+      card.className = "exercise-card";
+      card.style.setProperty("--muscle-color", color);
+
+      const head = document.createElement("div");
+      head.className = "exercise-head";
+      head.innerHTML = `
+        <div>
+          <div class="name">${escapeHtml(ex.name)}</div>
+          ${ex.muscle ? `<div class="muscle-tag"><span class="dot"></span>${escapeHtml(ex.muscle)}${ex.equipment ? " • "+escapeHtml(ex.equipment):""}</div>`:""}
+        </div>
+        <button class="del" title="Remove exercise">✕</button>
+      `;
+      head.querySelector(".del").addEventListener("click", ()=>{
+        log.exercises = log.exercises.filter(e=>e.id!==ex.id);
+        save(); renderExercises();
+      });
+      card.appendChild(head);
+
+      const table = document.createElement("div");
+      table.className = "set-table";
+      table.innerHTML = `<div class="set-row head-row"><div>SET</div><div>WEIGHT (kg)</div><div>REPS</div><div></div></div>`;
+
+      ex.sets.forEach((set, idx)=>{
+        const row = document.createElement("div");
+        row.className = "set-row";
+        row.innerHTML = `
+          <div class="set-num">${idx+1}</div>
+          <input type="number" inputmode="decimal" placeholder="0" value="${set.weight ?? ''}">
+          <input type="number" inputmode="numeric" placeholder="0" value="${set.reps ?? ''}">
+          <button class="chk ${set.done?'done':''}">${set.done?'✓':''}</button>
+        `;
+        const [wIn, rIn] = row.querySelectorAll("input");
+        wIn.addEventListener("input", ()=>{ set.weight = wIn.value; save(); });
+        rIn.addEventListener("input", ()=>{ set.reps = rIn.value; save(); });
+        row.querySelector(".chk").addEventListener("click", (e)=>{
+          set.done = !set.done;
+          e.target.classList.toggle("done", set.done);
+          e.target.textContent = set.done ? "✓":"";
+          save();
+        });
+        table.appendChild(row);
+      });
+      card.appendChild(table);
+
+      const addSetBtn = document.createElement("button");
+      addSetBtn.className = "add-set-btn";
+      addSetBtn.textContent = "+ ADD SET";
+      addSetBtn.addEventListener("click", ()=>{
+        ex.sets.push({weight:"", reps:"", done:false});
+        save(); renderExercises();
+      });
+      card.appendChild(addSetBtn);
+
+      list.appendChild(card);
+    });
+  }
+
+  $("#sessionNotes").addEventListener("input", (e)=>{
+    getLog(currentDate).notes = e.target.value;
+    save();
+  });
+
+  // ---------- Exercise picker (2-step: muscle -> exercise) ----------
+  const pickerModal = $("#pickerModal");
+  const step1 = $("#pickerStep1");
+  const step2 = $("#pickerStep2");
+
+  $("#addExerciseBtn").addEventListener("click", ()=>{
+    openPicker();
+  });
+
+  function openPicker(){
+    renderMuscleGrid();
+    step1.style.display = "block";
+    step2.style.display = "none";
+    pickerModal.classList.add("show");
+  }
+  $("#cancelPicker1").addEventListener("click", ()=> pickerModal.classList.remove("show"));
+  pickerModal.addEventListener("click", (e)=>{ if(e.target===pickerModal) pickerModal.classList.remove("show"); });
+
+  function renderMuscleGrid(){
+    const grid = $("#muscleGrid");
+    grid.innerHTML = "";
+    MUSCLE_GROUPS.forEach(m=>{
+      const tile = document.createElement("button");
+      tile.className = "muscle-tile";
+      tile.innerHTML = `<span class="dot" style="background:${m.color}"></span>${m.key}<span class="cnt">${EXERCISE_LIBRARY[m.key].length}</span>`;
+      tile.addEventListener("click", ()=> openMuscleExercises(m.key));
+      grid.appendChild(tile);
+    });
+  }
+
+  function openMuscleExercises(muscleKey){
+    pickerMuscle = muscleKey;
+    $("#pickerMuscleTitle").textContent = muscleKey;
+    $("#exerciseSearch").value = "";
+    $("#customExerciseInput").value = "";
+    renderExercisePickList("");
+    step1.style.display = "none";
+    step2.style.display = "block";
+  }
+  $("#backToMuscles").addEventListener("click", ()=>{
+    step1.style.display = "block";
+    step2.style.display = "none";
+  });
+
+  function renderExercisePickList(filter){
+    const wrap = $("#exercisePickerList");
+    wrap.innerHTML = "";
+    const items = EXERCISE_LIBRARY[pickerMuscle].filter(ex =>
+      ex.name.toLowerCase().includes(filter.toLowerCase())
+    );
+    if(!items.length){
+      wrap.innerHTML = `<div class="no-results">No matches. Add it as a custom exercise below.</div>`;
+      return;
+    }
+    items.forEach(ex=>{
+      const row = document.createElement("div");
+      row.className = "exercise-pick-item";
+      row.innerHTML = `
+        <div>
+          <div class="epn">${escapeHtml(ex.name)}</div>
+          <div class="epe">${escapeHtml(ex.equipment)}</div>
+        </div>
+        <div class="epa">+</div>
+      `;
+      row.addEventListener("click", ()=> addExerciseToLog(ex.name, pickerMuscle, ex.equipment));
+      wrap.appendChild(row);
+    });
+  }
+  $("#exerciseSearch").addEventListener("input", (e)=> renderExercisePickList(e.target.value));
+  $("#addCustomExercise").addEventListener("click", ()=>{
+    const name = $("#customExerciseInput").value.trim();
+    if(!name){ showToast("Enter an exercise name"); return; }
+    addExerciseToLog(name, pickerMuscle, "");
+  });
+  $("#customExerciseInput").addEventListener("keydown", (e)=>{
+    if(e.key === "Enter"){ $("#addCustomExercise").click(); }
+  });
+
+  function addExerciseToLog(name, muscle, equipment){
+    const log = getLog(currentDate);
+    const sets = [
+      {weight:"", reps:"", done:false},
+      {weight:"", reps:"", done:false},
+      {weight:"", reps:"", done:false}
+    ];
+    log.exercises.push({ id: uid(), name, muscle, equipment, sets });
+    save();
+    pickerModal.classList.remove("show");
+    renderExercises();
+    showToast(name + " added");
+  }
+
+  // ---------- Routine day modal (settings) ----------
+  const routineModal = $("#routineModal");
+  $("#addRoutineBtn").addEventListener("click", ()=>{
+    $("#routineNameInput").value = "";
+    routineModal.classList.add("show");
+    setTimeout(()=>$("#routineNameInput").focus(),100);
+  });
+  $("#cancelRoutine").addEventListener("click", ()=> routineModal.classList.remove("show"));
+  routineModal.addEventListener("click", (e)=>{ if(e.target===routineModal) routineModal.classList.remove("show"); });
+  $("#confirmRoutine").addEventListener("click", ()=>{
+    const name = $("#routineNameInput").value.trim();
+    if(!name){ showToast("Enter a routine name"); return; }
+    IronStore.db.routines.push({id: uid(), name});
+    save();
+    routineModal.classList.remove("show");
+    renderRoutineBar();
+    renderRoutineEditor();
+    showToast("Routine day added");
+  });
+
+  function renderRoutineEditor(){
+    const wrap = $("#routineEditor");
+    wrap.innerHTML = "";
+    IronStore.db.routines.forEach(r=>{
+      const row = document.createElement("div");
+      row.className = "settings-row";
+      row.innerHTML = `<div class="st-lbl">${escapeHtml(r.name)}</div>`;
+      const del = document.createElement("button");
+      del.className = "danger";
+      del.textContent = "REMOVE";
+      del.addEventListener("click", ()=>{
+        IronStore.db.routines = IronStore.db.routines.filter(x=>x.id!==r.id);
+        save(); renderRoutineEditor(); renderRoutineBar();
+      });
+      row.appendChild(del);
+      wrap.appendChild(row);
+    });
+    const total = Object.values(EXERCISE_LIBRARY).reduce((a,l)=>a+l.length,0);
+    $("#libraryCount").textContent = `${total} exercises across ${MUSCLE_GROUPS.length} muscle groups`;
+  }
+
+  // ---------- Photos ----------
+  $("#photoInput").addEventListener("change", (e)=>{
+    const files = Array.from(e.target.files || []);
+    if(!files.length) return;
+    let remaining = files.length;
+    files.forEach(file=>{
+      const reader = new FileReader();
+      reader.onload = (ev)=>{
+        compressImage(ev.target.result, (dataUrl)=>{
+          IronStore.db.photos.unshift({ id: uid(), date: currentDate, dataUrl });
+          save();
+          remaining--;
+          if(remaining===0){ renderPhotos(); showToast("Photo saved to this device"); }
+        });
+      };
+      reader.readAsDataURL(file);
+    });
+    e.target.value = "";
+  });
+
+  function compressImage(dataUrl, cb){
+    const img = new Image();
+    img.onload = ()=>{
+      const maxDim = 1200;
+      let {width, height} = img;
+      if(width > maxDim || height > maxDim){
+        const ratio = Math.min(maxDim/width, maxDim/height);
+        width = Math.round(width*ratio); height = Math.round(height*ratio);
+      }
+      const canvas = document.createElement("canvas");
+      canvas.width = width; canvas.height = height;
+      canvas.getContext("2d").drawImage(img, 0, 0, width, height);
+      cb(canvas.toDataURL("image/jpeg", 0.82));
+    };
+    img.onerror = ()=> cb(dataUrl);
+    img.src = dataUrl;
+  }
+
+  function renderPhotos(){
+    const grid = $("#photoGrid");
+    grid.innerHTML = "";
+    $("#photoCount").textContent = IronStore.db.photos.length;
+    IronStore.db.photos.forEach(p=>{
+      const item = document.createElement("div");
+      item.className = "photo-item";
+      item.innerHTML = `
+        <img src="${p.dataUrl}" alt="Progress photo ${p.date}">
+        <button class="pdel">✕</button>
+        <div class="pdate">${p.date}</div>
+      `;
+      item.querySelector(".pdel").addEventListener("click", ()=>{
+        IronStore.db.photos = IronStore.db.photos.filter(x=>x.id!==p.id);
+        save(); renderPhotos();
+      });
+      grid.appendChild(item);
+    });
+  }
+
+  // ---------- Progress ----------
+  $all("#rangeToggle button").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      $all("#rangeToggle button").forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      currentRange = parseInt(btn.dataset.range);
+      renderMuscleVolume();
+    });
+  });
+
+  function withinRange(dateStr, days){
+    if(days === 0) return true; // ALL
+    const d = new Date(dateStr+"T00:00:00");
+    const cutoff = new Date(); cutoff.setDate(cutoff.getDate()-days);
+    return d >= cutoff;
+  }
+
+  function renderProgress(){
+    const db = IronStore.db;
+    const loggedDates = Object.keys(db.logs).filter(d => db.logs[d].exercises.length>0).sort();
+    $("#statTotal").textContent = loggedDates.length;
+    let totalSets = 0;
+    loggedDates.forEach(d => db.logs[d].exercises.forEach(ex => totalSets += ex.sets.filter(s=>s.done).length));
+    $("#statVolume").textContent = totalSets;
+
+    // streak
+    let streak = 0;
+    let cursor = new Date();
+    while(true){
+      const ds = todayStr(cursor);
+      if(db.logs[ds] && db.logs[ds].exercises.length>0){
+        streak++;
+        cursor.setDate(cursor.getDate()-1);
+      } else if(ds === todayStr()){
+        cursor.setDate(cursor.getDate()-1);
+        continue;
+      } else break;
+    }
+    $("#statStreak").textContent = streak;
+
+    renderMuscleVolume();
+    renderPersonalRecords();
+    renderHistory();
+  }
+
+  function renderMuscleVolume(){
+    const db = IronStore.db;
+    const counts = {}; // muscle -> completed set count
+    MUSCLE_GROUPS.forEach(m => counts[m.key] = 0);
+
+    Object.entries(db.logs).forEach(([dateStr, log])=>{
+      if(!withinRange(dateStr, currentRange)) return;
+      log.exercises.forEach(ex=>{
+        const muscle = ex.muscle && counts.hasOwnProperty(ex.muscle) ? ex.muscle : null;
+        if(!muscle) return;
+        counts[muscle] += ex.sets.filter(s=>s.done).length;
+      });
+    });
+
+    const entries = MUSCLE_GROUPS.map(m => ({ key: m.key, color: m.color, val: counts[m.key] }))
+      .sort((a,b)=> b.val - a.val);
+    const max = Math.max(1, ...entries.map(e=>e.val));
+
+    const wrap = $("#muscleVolumeList");
+    wrap.innerHTML = "";
+    const active = entries.filter(e=>e.val>0);
+    if(!active.length){
+      wrap.innerHTML = `<div class="empty-state" style="padding:24px 10px;"><p>No completed sets in this range yet. Check off sets as you finish them to see your muscle balance here.</p></div>`;
+      $("#muscleVolumeHint").textContent = "";
+      return;
+    }
+    active.forEach(e=>{
+      const row = document.createElement("div");
+      row.className = "mv-row";
+      row.innerHTML = `
+        <div class="mv-row-top">
+          <div class="mv-name"><span class="dot" style="background:${e.color}"></span>${e.key}</div>
+          <div class="mv-val">${e.val} sets</div>
+        </div>
+        <div class="mv-bar-track"><div class="mv-bar-fill" style="width:${(e.val/max*100).toFixed(0)}%; background:${e.color}"></div></div>
+      `;
+      wrap.appendChild(row);
+    });
+    const under = MUSCLE_GROUPS.filter(m => counts[m.key] === 0).map(m=>m.key);
+    $("#muscleVolumeHint").textContent = under.length
+      ? `Not trained in this range: ${under.join(", ")}.`
+      : "Every muscle group has logged sets in this range — solid balance.";
+  }
+
+  function renderPersonalRecords(){
+    const db = IronStore.db;
+    const best = {}; // name -> {weight, reps, date, muscle}
+    Object.entries(db.logs).sort(([a],[b])=> a<b?-1:1).forEach(([dateStr, log])=>{
+      log.exercises.forEach(ex=>{
+        ex.sets.forEach(s=>{
+          if(!s.done) return;
+          const w = parseFloat(s.weight);
+          if(isNaN(w) || w<=0) return;
+          if(!best[ex.name] || w > best[ex.name].weight){
+            best[ex.name] = { weight: w, reps: s.reps || "-", date: dateStr, muscle: ex.muscle };
+          }
+        });
+      });
+    });
+    const list = Object.entries(best)
+      .sort((a,b)=> new Date(b[1].date) - new Date(a[1].date))
+      .slice(0, 8);
+
+    const wrap = $("#prList");
+    wrap.innerHTML = "";
+    if(!list.length){
+      wrap.innerHTML = `<div class="empty-state" style="padding:24px 10px;"><p>Log weight on a completed set to start tracking personal records.</p></div>`;
+      return;
+    }
+    list.forEach(([name, rec])=>{
+      const color = getMuscleColor(rec.muscle);
+      const item = document.createElement("div");
+      item.className = "pr-item";
+      item.style.setProperty("--muscle-color", color);
+      item.innerHTML = `
+        <div>
+          <div class="pn">${escapeHtml(name)}</div>
+          <div class="pm">${escapeHtml(rec.muscle || "")}</div>
+        </div>
+        <div>
+          <div class="pv">${rec.weight}kg × ${escapeHtml(String(rec.reps))}</div>
+          <div class="pd">${rec.date}</div>
+        </div>
+      `;
+      wrap.appendChild(item);
+    });
+  }
+
+  function renderHistory(){
+    const db = IronStore.db;
+    const histList = $("#historyList");
+    histList.innerHTML = "";
+    const sortedDates = Object.keys(db.logs).sort().reverse().slice(0,60);
+    const withContent = sortedDates.filter(d => db.logs[d].exercises.length || db.logs[d].notes);
+    if(!withContent.length){
+      histList.innerHTML = `<div class="empty-state"><div class="big">📈</div><p>Your logged sessions will show up here once you start tracking.</p></div>`;
+      return;
+    }
+    withContent.forEach(d=>{
+      const log = db.logs[d];
+      const routine = db.routines.find(r=>r.id===log.routineId);
+      const doneSets = log.exercises.reduce((a,ex)=>a+ex.sets.filter(s=>s.done).length,0);
+      const item = document.createElement("div");
+      item.className = "history-item" + (log.exercises.length ? " has-log":"");
+      item.innerHTML = `
+        <div>
+          <div class="hd">${fmtDateDisplay(d)}</div>
+          <div class="hs">${routine? routine.name+" • ":""}${log.exercises.length} exercises • ${doneSets} sets completed</div>
+        </div>
+        <div class="harrow">›</div>
+      `;
+      item.addEventListener("click", ()=>{
+        setDate(d);
+        $all(".tabbar .tab").forEach(b=>b.classList.remove("active"));
+        $('.tabbar .tab[data-tab="sec-workout"]').classList.add("active");
+        $all("main section").forEach(s=>s.classList.remove("active"));
+        $("#sec-workout").classList.add("active");
+      });
+      histList.appendChild(item);
+    });
+  }
+
+  // ---------- Export / Import / Erase ----------
+  $("#exportBtn").addEventListener("click", ()=>{
+    const blob = new Blob([JSON.stringify(IronStore.db, null, 2)], {type:"application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `ironlog-backup-${todayStr()}.json`;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    showToast("Backup downloaded");
+  });
+  $("#importBtn").addEventListener("click", ()=> $("#importInput").click());
+  $("#importInput").addEventListener("change", (e)=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev)=>{
+      try{
+        const parsed = JSON.parse(ev.target.result);
+        IronStore.replaceDB(parsed);
+        setDate(currentDate);
+        renderRoutineEditor();
+        showToast("Backup imported");
+      }catch(err){
+        showToast("Invalid backup file");
+      }
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  });
+  $("#eraseBtn").addEventListener("click", ()=>{
+    if(confirm("This will permanently delete all workouts, routines, and photos from this device. Continue?")){
+      IronStore.eraseAll();
+      setDate(todayStr());
+      renderRoutineEditor();
+      renderPhotos();
+      showToast("All data erased");
+    }
+  });
+
+  // ---------- Init ----------
+  setDate(todayStr());
+  renderRoutineEditor();
+  renderPhotos();
+
+})();
+
+</script>
 </body>
 </html>
