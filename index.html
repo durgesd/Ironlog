@@ -295,7 +295,64 @@ nav.tabbar button.active svg{ stroke: var(--iron); }
 }
 .settings-row button.danger{ color: var(--rust); border-color: var(--rust); background:transparent; }
 
+/* ---------- How-To Demo ---------- */
+.howto-btn{
+  background: var(--surface-2); border:1px solid var(--steel); color: var(--iron);
+  width:30px; height:30px; border-radius: var(--radius); cursor:pointer;
+  font-size:13px; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+}
+.exercise-head .head-actions{ display:flex; gap:6px; flex-shrink:0; }
+.exercise-pick-item{ align-items:center; }
+.epick-right{ display:flex; align-items:center; gap:8px; }
+
+.demo-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+.demo-head h3{ font-size:17px; padding-right:10px; }
+.close-btn{ background: var(--surface-2); border:1px solid var(--steel); color: var(--chalk); width:30px; height:30px; border-radius: var(--radius); cursor:pointer; flex-shrink:0; }
+
+.demo-frame{
+  width:100%; aspect-ratio: 1/1; background: var(--surface-2); border:1px solid var(--steel);
+  border-radius: var(--radius); display:flex; align-items:center; justify-content:center;
+  overflow:hidden; margin-bottom:14px; position:relative;
+}
+.demo-frame img{ width:100%; height:100%; object-fit:contain; }
+.demo-frame .demo-loading, .demo-frame .demo-empty{
+  color: var(--chalk-dim); font-size:13px; text-align:center; padding:20px; line-height:1.6;
+}
+.demo-frame .demo-badge{
+  position:absolute; bottom:8px; right:8px; background: rgba(0,0,0,.7); color: var(--iron);
+  font-size:9px; padding:3px 7px; border-radius:20px; font-family:'Oswald'; letter-spacing:.5px;
+}
+.demo-meta{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
+.demo-meta span{
+  font-size:10px; color: var(--chalk-dim); background: var(--surface-2); border:1px solid var(--steel);
+  padding: 4px 9px; border-radius:20px; text-transform:capitalize;
+}
+.demo-instructions{ list-style:none; padding:0; margin:0 0 6px; counter-reset: step; }
+.demo-instructions li{
+  counter-increment: step; padding: 10px 0 10px 32px; position:relative;
+  border-top:1px solid #242429; font-size:13px; line-height:1.5; color: var(--chalk);
+}
+.demo-instructions li:first-child{ border-top:none; }
+.demo-instructions li::before{
+  content: counter(step); position:absolute; left:0; top:10px;
+  width:20px; height:20px; border-radius:50%; background: var(--surface-2); border:1px solid var(--iron-dim);
+  color: var(--iron); font-family:'Oswald'; font-size:11px; display:flex; align-items:center; justify-content:center;
+}
+.demo-source{ font-size:10px; color:#5c5c66; margin-top:10px; line-height:1.5; }
+.demo-source a{ color: var(--chalk-dim); }
+.demo-search-btn{
+  display:block; width:100%; text-align:center; padding:12px; margin-top:6px;
+  background: var(--surface-2); border:1px solid var(--steel); color: var(--iron);
+  border-radius: var(--radius); font-family:'Oswald'; font-size:13px; text-decoration:none;
+}
+
 </style>
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAIAAADdvvtQAAACNElEQVR4nO3dsQ2CUBRAUTROQEHhCC7lbC7lCM5hYUGrXIhozukhP+TmVQ84jOM0wFLHbx+A3yYgEgGRCIhEQCQCIhEQiYBIBEQiIBIBkQiIREAkAiIREImASAREIiASAZEIiERAJAIiERCJgEgERCIgEgGRCIhEQCQCIhEQiYBIBEQiIBIBkQiIREAkAiIREImASAREIiASAZEIiERAJAIiERCJgEhOi6+8384rnuPlcn2sfs//s6snbwKRCIhEQCQCIhEQiYBIBEQiIBIBkQiIREAkAiIREImASAREMu8DvbllYmXnv32agQlEIiASAZEIiERAJAIiERCJgEgERCIgEgGRCIhEQCQCIhEQiYBIBEQiIJLln7jbwhYfb2NTJhCJgEgERCIgEgGRCIhEQCQCIhEQiYBIBEQiIBIBkQiIREAkAiIREImASAREIiASAZEIiERAJPt6L8x/FN6xq7fnTCASAZEIiERAJAIiERCJgEgERCIgEgGRCIhEQCQCIhEQiYBIBEQiIBIBkcwrrdZJGT7PwAQiERCJgEgERCIgEgGRCIhEQCQCIhEQiYBIBEQiIBIBkQiI5DCO07fPwA8zgUgERCIgEgGRCIhEQCQCIhEQiYBIBEQiIBIBkQiIREAkAiIREImASAREIiASAZEIiERAJAIiERCJgEgERCIgEgGRCIhEQCQCIhEQiYBIBEQiIBIBkQiIREAkAiIREImASAREIiASAZEIiERAJAIiERDJEyqAFWw/FWeIAAAAAElFTkSuQmCC">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="IronLog">
 </head>
 <body>
 
@@ -473,6 +530,17 @@ nav.tabbar button.active svg{ stroke: var(--iron); }
       <button class="btn btn-ghost" id="cancelRoutine">CANCEL</button>
       <button class="btn btn-primary" id="confirmRoutine">SAVE</button>
     </div>
+  </div>
+</div>
+
+<!-- How-To / Demo Modal -->
+<div class="modal-backdrop" id="demoModal">
+  <div class="modal modal-tall">
+    <div class="demo-head">
+      <h3 id="demoTitle">Exercise</h3>
+      <button class="close-btn" id="closeDemoModal">✕</button>
+    </div>
+    <div id="demoBody"></div>
   </div>
 </div>
 
@@ -719,6 +787,97 @@ const IronStore = (function(){
 </script>
 <script>
 /* ==========================================================================
+   IRONLOG — Exercise Demo module
+   Looks up a short animated form demo + step-by-step instructions for an
+   exercise from the "Free Exercise DB" — an open, public-domain dataset
+   (Unlicense) of 800+ exercises with images, published at
+   https://github.com/yuhonas/free-exercise-db and hosted on GitHub's CDN.
+   IRONLOG does not host or bundle any of this media itself — it is fetched
+   live, once, and cached locally on your device. Requires an internet
+   connection the first time you view a given exercise's demo.
+   ========================================================================== */
+const ExerciseDemo = (function(){
+  const DB_URL = "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/dist/exercises.json";
+  const IMG_BASE = "https://raw.githubusercontent.com/yuhonas/free-exercise-db/main/exercises/";
+  const CACHE_KEY = "ironlog_exercisedb_cache_v1";
+  const CACHE_TTL_MS = 1000 * 60 * 60 * 24 * 14; // 2 weeks
+
+  let dbPromise = null;
+
+  function normalize(s){
+    return (s||"").toLowerCase().replace(/[^a-z0-9 ]/g," ").replace(/\s+/g," ").trim();
+  }
+
+  function loadFromCache(){
+    try{
+      const raw = localStorage.getItem(CACHE_KEY);
+      if(!raw) return null;
+      const parsed = JSON.parse(raw);
+      if(Date.now() - parsed.ts > CACHE_TTL_MS) return null;
+      return parsed.data;
+    }catch(e){ return null; }
+  }
+  function saveToCache(data){
+    try{ localStorage.setItem(CACHE_KEY, JSON.stringify({ ts: Date.now(), data })); }
+    catch(e){ /* storage full or blocked — fine, just won't cache */ }
+  }
+
+  function getDB(){
+    if(dbPromise) return dbPromise;
+    const cached = loadFromCache();
+    if(cached){
+      dbPromise = Promise.resolve(cached);
+      return dbPromise;
+    }
+    dbPromise = fetch(DB_URL).then(r=>{
+      if(!r.ok) throw new Error("bad response");
+      return r.json();
+    }).then(data=>{
+      saveToCache(data);
+      return data;
+    }).catch(err=>{
+      dbPromise = null; // allow retry next time
+      throw err;
+    });
+    return dbPromise;
+  }
+
+  // Simple word-overlap fuzzy match: scores each DB entry by how many
+  // normalized words it shares with the query, favors closer length match.
+  function findBestMatch(query, entries){
+    const qWords = new Set(normalize(query).split(" ").filter(Boolean));
+    if(!qWords.size) return null;
+    let best = null, bestScore = 0;
+    entries.forEach(entry=>{
+      if(!entry.images || !entry.images.length) return;
+      const eWords = new Set(normalize(entry.name).split(" ").filter(Boolean));
+      let overlap = 0;
+      qWords.forEach(w=>{ if(eWords.has(w)) overlap++; });
+      const score = overlap / Math.max(qWords.size, eWords.size);
+      if(score > bestScore){ bestScore = score; best = entry; }
+    });
+    return bestScore >= 0.45 ? best : null;
+  }
+
+  async function find(name){
+    const db = await getDB();
+    const match = findBestMatch(name, db);
+    if(!match) return null;
+    return {
+      name: match.name,
+      images: match.images.map(p => IMG_BASE + p),
+      instructions: match.instructions || [],
+      equipment: match.equipment,
+      level: match.level,
+      primaryMuscles: match.primaryMuscles || []
+    };
+  }
+
+  return { find };
+})();
+</script>
+<script>
+/* ==========================================================================
    IRONLOG — App logic
    Depends on: exercise-library.js, storage.js
    ========================================================================== */
@@ -833,8 +992,12 @@ const IronStore = (function(){
           <div class="name">${escapeHtml(ex.name)}</div>
           ${ex.muscle ? `<div class="muscle-tag"><span class="dot"></span>${escapeHtml(ex.muscle)}${ex.equipment ? " • "+escapeHtml(ex.equipment):""}</div>`:""}
         </div>
-        <button class="del" title="Remove exercise">✕</button>
+        <div class="head-actions">
+          <button class="howto-btn" title="How to do this exercise">▶</button>
+          <button class="del" title="Remove exercise">✕</button>
+        </div>
       `;
+      head.querySelector(".howto-btn").addEventListener("click", ()=> openDemoModal(ex.name));
       head.querySelector(".del").addEventListener("click", ()=>{
         log.exercises = log.exercises.filter(e=>e.id!==ex.id);
         save(); renderExercises();
@@ -947,9 +1110,17 @@ const IronStore = (function(){
           <div class="epn">${escapeHtml(ex.name)}</div>
           <div class="epe">${escapeHtml(ex.equipment)}</div>
         </div>
-        <div class="epa">+</div>
+        <div class="epick-right">
+          <button class="howto-btn" title="How to do this exercise">▶</button>
+          <div class="epa">+</div>
+        </div>
       `;
-      row.addEventListener("click", ()=> addExerciseToLog(ex.name, pickerMuscle, ex.equipment));
+      row.querySelector(".epa").addEventListener("click", ()=> addExerciseToLog(ex.name, pickerMuscle, ex.equipment));
+      row.querySelector(".epn").addEventListener("click", ()=> addExerciseToLog(ex.name, pickerMuscle, ex.equipment));
+      row.querySelector(".howto-btn").addEventListener("click", (e)=>{
+        e.stopPropagation();
+        openDemoModal(ex.name);
+      });
       wrap.appendChild(row);
     });
   }
@@ -976,6 +1147,101 @@ const IronStore = (function(){
     renderExercises();
     showToast(name + " added");
   }
+
+  // ---------- How-To Demo Modal ----------
+  const demoModal = $("#demoModal");
+  let demoFrameTimer = null;
+
+  function stopDemoAnimation(){
+    if(demoFrameTimer){ clearInterval(demoFrameTimer); demoFrameTimer = null; }
+  }
+
+  function openDemoModal(exerciseName){
+    $("#demoTitle").textContent = exerciseName;
+    const body = $("#demoBody");
+    body.innerHTML = `<div class="demo-frame"><div class="demo-loading">Loading demo for "${escapeHtml(exerciseName)}"…</div></div>`;
+    demoModal.classList.add("show");
+    stopDemoAnimation();
+
+    ExerciseDemo.find(exerciseName).then(result=>{
+      if(!demoModal.classList.contains("show")) return; // closed while loading
+      if(!result){
+        renderNoDemo(exerciseName);
+        return;
+      }
+      renderDemo(result);
+    }).catch(()=>{
+      if(!demoModal.classList.contains("show")) return;
+      renderNoDemo(exerciseName, true);
+    });
+  }
+
+  function renderDemo(result){
+    const body = $("#demoBody");
+    const meta = [];
+    if(result.level) meta.push(result.level);
+    if(result.equipment) meta.push(result.equipment);
+    (result.primaryMuscles||[]).forEach(m=>meta.push(m));
+
+    body.innerHTML = `
+      <div class="demo-frame">
+        <div class="demo-loading">Loading images…</div>
+        <div class="demo-badge">FORM DEMO</div>
+      </div>
+      <div class="demo-meta">${meta.map(m=>`<span>${escapeHtml(m)}</span>`).join("")}</div>
+      ${result.instructions.length ? `<ol class="demo-instructions">${result.instructions.map(s=>`<li>${escapeHtml(s)}</li>`).join("")}</ol>` : ""}
+      <div class="demo-source">Demo courtesy of the open-source <a href="https://github.com/yuhonas/free-exercise-db" target="_blank" rel="noopener">Free Exercise DB</a> (public domain).</div>
+    `;
+
+    const frame = body.querySelector(".demo-frame");
+    const images = result.images.slice(0, 2);
+    if(!images.length){
+      frame.innerHTML = `<div class="demo-empty">No demo image available for this exercise.</div><div class="demo-badge">FORM DEMO</div>`;
+      return;
+    }
+    const preloaded = images.map(src=>{ const im = new Image(); im.src = src; return im; });
+    let idx = 0;
+    const imgEl = document.createElement("img");
+    imgEl.alt = result.name + " form demonstration";
+    imgEl.src = images[0];
+    imgEl.onerror = ()=>{
+      frame.innerHTML = `<div class="demo-empty">Demo image couldn't load — check your internet connection.</div><div class="demo-badge">FORM DEMO</div>`;
+      stopDemoAnimation();
+    };
+    frame.innerHTML = "";
+    frame.appendChild(imgEl);
+    const badge = document.createElement("div");
+    badge.className = "demo-badge";
+    badge.textContent = "FORM DEMO";
+    frame.appendChild(badge);
+
+    if(images.length > 1){
+      demoFrameTimer = setInterval(()=>{
+        idx = (idx + 1) % images.length;
+        imgEl.src = images[idx];
+      }, 800);
+    }
+  }
+
+  function renderNoDemo(exerciseName, isError){
+    const body = $("#demoBody");
+    const q = encodeURIComponent(exerciseName + " exercise proper form tutorial");
+    body.innerHTML = `
+      <div class="demo-frame">
+        <div class="demo-empty">${isError ? "Couldn't load the demo library — check your internet connection." : `No demo found for "${escapeHtml(exerciseName)}" in the exercise library.`}</div>
+        <div class="demo-badge">FORM DEMO</div>
+      </div>
+      <a class="demo-search-btn" href="https://www.youtube.com/results?search_query=${q}" target="_blank" rel="noopener">🔍 SEARCH "${escapeHtml(exerciseName)}" ON YOUTUBE</a>
+    `;
+  }
+
+  $("#closeDemoModal").addEventListener("click", ()=>{
+    demoModal.classList.remove("show");
+    stopDemoAnimation();
+  });
+  demoModal.addEventListener("click", (e)=>{
+    if(e.target===demoModal){ demoModal.classList.remove("show"); stopDemoAnimation(); }
+  });
 
   // ---------- Routine day modal (settings) ----------
   const routineModal = $("#routineModal");
@@ -1286,6 +1552,10 @@ const IronStore = (function(){
   setDate(todayStr());
   renderRoutineEditor();
   renderPhotos();
+
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('sw.js').catch(()=>{});
+  }
 
 })();
 

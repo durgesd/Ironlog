@@ -1,17 +1,8 @@
-/* IRONLOG service worker — caches app shell for offline use. */
-const CACHE_NAME = "ironlog-cache-v2";
-const ASSETS = [
-  "./",
-  "./index.html",
-  "./css/style.css",
-  "./js/exercise-library.js",
-  "./js/storage.js",
-  "./js/app.js",
-  "./manifest.json",
-  "./icons/icon.svg",
-  "./icons/icon-192.png",
-  "./icons/icon-512.png"
-];
+/* IRONLOG service worker — required by Chrome for a true "installable app"
+   (Add to Home Screen shows an app icon in standalone mode instead of a
+   browser shortcut) rather than just caching. */
+const CACHE_NAME = "ironlog-cache-v3";
+const ASSETS = ["./", "./index.html", "./manifest.json"];
 
 self.addEventListener("install", (event) => {
   self.skipWaiting();
