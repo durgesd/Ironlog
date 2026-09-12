@@ -1,59 +1,55 @@
-# IRONLOG — Daily Gym Tracker
+# IRONLOG — Admin + Member Apps
 
-An offline-first, installable gym tracker built for effective, targeted progress: a **muscle-specific exercise library**, daily set/rep/weight logging, a **muscle volume balance view**, personal records, and a secure on-device progress-photo gallery.
+Two separate apps that share data on the same device/origin — no server, no database, no login system. Everything lives in the browser's `localStorage`.
 
-No account, no server, no analytics — everything is stored in `localStorage` on your own device.
+## Files
 
-## Features
+| File | What it is |
+|---|---|
+| `index.html` | **Member app** — daily workout log, muscle-specific exercise picker, progress photos (with fullscreen viewer), progress/PR tracking, and a **Fees** tab showing your membership status & payment history. |
+| `admin.html` | **Admin app** — full gym management: members, plans, payments, attendance, trainers, and a **custom exercise manager** where you upload your own GIFs. |
+| `manifest.json` / `sw.js` | PWA files for the Member app (installable, offline). |
+| `admin-manifest.json` / `admin-sw.js` | PWA files for the Admin app (installable, offline). |
 
-- **Muscle-specific exercise library** — 90+ exercises pre-sorted into 12 muscle groups (Chest, Back, Shoulders, Biceps, Triceps, Forearms, Quads, Hamstrings, Glutes, Calves, Abs, Cardio). Pick a muscle, then pick an exercise — or add your own custom movement to any muscle group.
-- **Daily workout log** — assign a routine day (Push/Pull/Legs, or your own), log sets with weight + reps, check off completed sets, and navigate freely between any date.
-- **Muscle Volume progress view** — a 7/30/90-day/all-time bar breakdown of completed sets per muscle group, so you can spot which muscles are undertrained and keep your program balanced.
-- **Personal records** — automatically tracks your heaviest completed set per exercise, with the date it was set.
-- **Progress photos** — camera or gallery upload, auto-compressed and stored only on-device.
-- **Session streak & history** — day streak, total sessions, total completed sets, and a full session-by-session log you can tap back into.
-- **Installable PWA** — add to your phone's home screen and it works fully offline via a service worker.
-- **Backup/restore** — export all data to a JSON file, or import it back in, from Settings.
+## How the two apps share data
 
-## Project structure
+Both apps must be hosted on the **same domain** (e.g. the same GitHub Pages site) — for example:
 
 ```
-ironlog/
-├── index.html              # App shell & markup
-├── manifest.json           # PWA manifest (installable, app icon, theme)
-├── sw.js                   # Service worker — offline caching
-├── css/
-│   └── style.css           # All styling
-├── js/
-│   ├── exercise-library.js # Exercise database, grouped by muscle
-│   ├── storage.js          # localStorage data layer (IronStore)
-│   └── app.js               # UI logic & rendering
-├── icons/
-│   ├── icon.svg
-│   ├── icon-192.png
-│   └── icon-512.png
-└── README.md
+https://yourname.github.io/ironlog/           → Member app (index.html)
+https://yourname.github.io/ironlog/admin.html → Admin app
 ```
 
-## Run it
+Because `localStorage` is shared by all pages on the same origin, anything the Admin app writes — custom exercises with GIFs, member records, payments — is instantly visible to the Member app on that same device/browser. No internet sync, no backend: just the same browser reading the same local storage.
 
-Just open `index.html` in a browser — no build step, no dependencies, no install required.
+**Important:** this means the two apps only share data if opened in the **same browser on the same device**. If a member opens the Member app on their own phone, they won't automatically see the gym's data unless the Admin operator exports a backup and the member imports it (Settings → Export/Import), or they're using a shared front-desk device.
 
-### Host it on GitHub Pages
-1. Push this folder's contents to a GitHub repo.
-2. Go to **Settings → Pages**.
-3. Set the source to your default branch, root folder.
-4. Visit `https://<username>.github.io/<repo>/` on your phone.
-5. Tap your browser's **"Add to Home Screen"** — it installs like a native app and works offline afterward.
+## Admin app — what you can do
 
-## Customizing the exercise library
+- **Dashboard** — total/active/expired members, today's check-ins, 30-day revenue, memberships expiring within 7 days.
+- **Exercises** — add your own exercises with a name, muscle group, equipment, step-by-step instructions, and an uploaded **GIF or image** showing correct form (max 4MB). These automatically appear in the Member app's exercise picker, tagged "GYM".
+- **Members** — add/edit/delete, with photo, plan, join date, notes; tap a member to see full payment history and renew their membership.
+- **Plans** — create membership plans (name, duration, price).
+- **Payments** — record a payment, optionally auto-extending the member's plan.
+- **Attendance** — daily check-in list, searchable.
+- **Trainers** — simple staff directory.
+- **Settings** — export/import a combined backup (gym data + custom exercises), or erase either independently.
 
-Open `js/exercise-library.js`. Each muscle group is a key in `EXERCISE_LIBRARY` mapping to an array of `{ name, equipment }` objects. Add, remove, or rename entries freely — the app picks up changes automatically. Add a new muscle group by adding it to both `MUSCLE_GROUPS` (with a hex color) and `EXERCISE_LIBRARY`.
+## Member app — what's new
 
-## Data & privacy
+- **Fees tab** — pick your name from the gym's member list (once, first time) to see your plan, status (active/expired), and full payment history, pulled live from the Admin app's data.
+- **Custom exercise GIFs** — when you tap the ▶ "how-to" button on an exercise your gym added, you'll see their uploaded GIF and instructions instead of the generic public demo.
+- **Photo lightbox** — tap any progress photo to view it fullscreen, swipe between photos, and delete from the viewer.
+- Everything from before still works: routine days, muscle-specific exercise picker, set/rep/weight logging, muscle volume balance, personal records, and full local backup.
 
-All data (workouts, routines, notes, personal records, photos) lives only in your browser's `localStorage`, tied to that browser and device. It is never uploaded anywhere. Switching browsers or devices, or clearing site data, will lose it — use **Settings → Export backup** periodically, and **Import backup** to restore.
+## Hosting on GitHub Pages
 
-## Tech
+1. Push all 6 files to your repo's root (no subfolders).
+2. Settings → Pages → enable, root folder.
+3. Member app: `https://<username>.github.io/<repo>/`
+4. Admin app: `https://<username>.github.io/<repo>/admin.html`
+5. On the gym's front-desk device, install the Admin app (Add to Home Screen). On each member's phone, install the Member app the same way.
 
-Plain HTML, CSS, and vanilla JavaScript — no build tools, no frameworks, no external runtime dependencies (only a Google Font is loaded from a CDN). Easy to read, fork, and extend.
+## Privacy
+
+All data — members, payments, exercise GIFs, workout logs, progress photos — stays in `localStorage` on-device. Nothing is uploaded anywhere. Use the Export/Import backup features regularly, since clearing browser data or switching devices loses everything not backed up.

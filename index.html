@@ -266,6 +266,7 @@ nav.tabbar button.active svg{ stroke: var(--iron); }
 }
 .exercise-pick-item .epn{ font-size:14px; }
 .exercise-pick-item .epe{ font-size:10px; color: var(--chalk-dim); margin-top:2px; }
+.gym-tag{ font-size:8px; background: var(--iron); color:#141410; padding:2px 6px; border-radius:20px; font-family:'Inter'; font-weight:700; vertical-align:middle; margin-left:4px; }
 .exercise-pick-item .epa{ color: var(--iron); font-size:18px; }
 .custom-exercise-row{ display:flex; gap:8px; align-items:flex-start; }
 .custom-exercise-row input{ margin-bottom:0; flex:1; }
@@ -346,6 +347,118 @@ nav.tabbar button.active svg{ stroke: var(--iron); }
   border-radius: var(--radius); font-family:'Oswald'; font-size:13px; text-decoration:none;
 }
 
+/* ---------- Gym Management ---------- */
+.gym-subnav{ display:flex; gap:8px; overflow-x:auto; padding-bottom:10px; margin-bottom:6px; }
+.gym-tab{
+  flex:0 0 auto; padding:8px 14px; background: var(--surface-2); border:1px solid var(--steel);
+  color: var(--chalk-dim); font-family:'Oswald'; font-size:13px; border-radius: var(--radius); cursor:pointer; white-space:nowrap;
+}
+.gym-tab.active{ border-color: var(--iron); color: var(--iron); background: rgba(232,179,48,0.08); }
+.gym-panel{ display:none; }
+.gym-panel.active{ display:block; animation: fade .2s ease; }
+
+#memberSearch, #attendanceSearch{
+  width:100%; background: var(--surface-2); border:1px solid var(--steel); color: var(--chalk);
+  padding:11px; border-radius: var(--radius); font-size:14px; margin-bottom:12px;
+}
+
+.member-card, .plan-card, .payment-item, .trainer-card{
+  display:flex; align-items:center; gap:12px; background: var(--surface); border:1px solid var(--steel);
+  border-left:3px solid var(--iron); border-radius: var(--radius); padding:12px 14px; margin-bottom:8px; cursor:pointer;
+}
+.plan-card, .trainer-card{ cursor:default; justify-content:space-between; }
+.payment-item{ cursor:default; }
+.member-avatar{
+  width:42px; height:42px; border-radius:50%; background: var(--surface-2); border:1px solid var(--steel);
+  flex-shrink:0; display:flex; align-items:center; justify-content:center; font-family:'Oswald'; font-size:16px; color: var(--iron); overflow:hidden;
+}
+.member-avatar img{ width:100%; height:100%; object-fit:cover; }
+.member-info{ flex:1; min-width:0; }
+.member-info .mn{ font-family:'Oswald'; font-size:15px; }
+.member-info .mp{ font-size:11px; color: var(--chalk-dim); margin-top:2px; }
+.status-badge{ font-size:9px; padding:3px 8px; border-radius:20px; font-family:'Oswald'; letter-spacing:.3px; flex-shrink:0; }
+.status-badge.active{ background: rgba(111,168,91,0.15); color: var(--green); }
+.status-badge.expired{ background: rgba(196,72,46,0.15); color: var(--rust); }
+.status-badge.noplan{ background: var(--surface-2); color: var(--chalk-dim); }
+
+.plan-card .pc-name{ font-family:'Oswald'; font-size:15px; }
+.plan-card .pc-meta{ font-size:11px; color: var(--chalk-dim); margin-top:2px; }
+.plan-card .pc-actions{ display:flex; gap:6px; }
+.plan-card .pc-actions button{ background: var(--surface-2); border:1px solid var(--steel); color: var(--chalk); width:28px; height:28px; border-radius:2px; cursor:pointer; font-size:12px; }
+.plan-card .pc-actions button.danger{ color: var(--rust); border-color: var(--rust); }
+
+.payment-item .pay-info .pn{ font-family:'Oswald'; font-size:14px; }
+.payment-item .pay-info .pd{ font-size:11px; color: var(--chalk-dim); margin-top:2px; }
+.payment-item .pay-amt{ font-family:'Oswald'; font-size:16px; color: var(--iron); margin-left:auto; }
+
+.trainer-card .tc-name{ font-family:'Oswald'; font-size:15px; }
+.trainer-card .tc-meta{ font-size:11px; color: var(--chalk-dim); margin-top:2px; }
+
+.field-label{ font-size:11px; color: var(--chalk-dim); display:block; margin-bottom:6px; letter-spacing:.5px; }
+.checkbox-row{ display:flex; align-items:center; gap:8px; font-size:13px; color: var(--chalk-dim); margin: 6px 0 10px; }
+.checkbox-row input{ width:auto; margin:0; }
+.photo-upload-btn.small{ padding:14px; font-size:12px; margin-bottom:12px; }
+
+.detail-stat-row{ display:flex; justify-content:space-between; padding:10px 0; border-top:1px solid #242429; font-size:13px; }
+.detail-stat-row:first-child{ border-top:none; }
+.detail-stat-row .dsl{ color: var(--chalk-dim); }
+.detail-actions{ display:flex; gap:8px; margin-top:16px; flex-wrap:wrap; }
+.detail-actions button{ flex:1; min-width:100px; }
+
+/* ---------- Modern polish ---------- */
+.exercise-card, .stat-card, .history-item, .photo-item{
+  box-shadow: 0 6px 16px rgba(0,0,0,.22);
+}
+.exercise-card{ border-radius: 6px; }
+.stat-card{ border-radius: 6px; }
+.photo-item{ border-radius: 8px; }
+.add-exercise-btn, .btn-primary{ box-shadow: 0 4px 14px rgba(232,179,48,0.12); }
+.modal{ backdrop-filter: blur(6px); }
+
+/* ---------- Photo Lightbox ---------- */
+.photo-item{ cursor:pointer; }
+.lightbox{
+  position:fixed; inset:0; background: rgba(6,6,8,.96); z-index:80;
+  display:none; flex-direction:column; align-items:center; justify-content:center;
+  padding: env(safe-area-inset-top) 12px env(safe-area-inset-bottom);
+}
+.lightbox.show{ display:flex; }
+.lightbox img{ max-width:100%; max-height:72vh; object-fit:contain; border-radius:4px; }
+.lb-close{
+  position:absolute; top:18px; right:16px; background: rgba(255,255,255,.08); border:none; color: var(--chalk);
+  width:36px; height:36px; border-radius:50%; font-size:16px; cursor:pointer; z-index:2;
+}
+.lb-nav{
+  position:absolute; top:50%; transform:translateY(-50%); background: rgba(255,255,255,.08); border:none;
+  color: var(--chalk); width:42px; height:42px; border-radius:50%; font-size:22px; cursor:pointer; z-index:2;
+}
+.lb-prev{ left:10px; } .lb-next{ right:10px; }
+.lb-footer{ margin-top:18px; display:flex; flex-direction:column; align-items:center; gap:10px; }
+.lb-footer span{ color: var(--chalk-dim); font-size:13px; font-family:'Oswald'; }
+.lb-delete{ background:transparent; border:1px solid var(--rust); color: var(--rust); padding:9px 16px; border-radius: var(--radius); font-family:'Oswald'; font-size:12px; cursor:pointer; }
+
+/* ---------- Fees Tab ---------- */
+.profile-card{
+  display:flex; align-items:center; gap:14px; background: linear-gradient(135deg, var(--surface), var(--surface-2));
+  border:1px solid var(--steel); border-radius:8px; padding:16px; margin-bottom:16px;
+}
+.profile-avatar{
+  width:56px; height:56px; border-radius:50%; background: var(--surface-2); border:2px solid var(--iron);
+  display:flex; align-items:center; justify-content:center; font-family:'Oswald'; font-size:22px; color: var(--iron); overflow:hidden; flex-shrink:0;
+}
+.profile-avatar img{ width:100%; height:100%; object-fit:cover; }
+.profile-name{ font-family:'Oswald'; font-size:18px; }
+.profile-plan{ font-size:12px; color: var(--chalk-dim); margin-top:3px; }
+.fee-summary-grid{ display:grid; grid-template-columns: repeat(2,1fr); gap:10px; margin-bottom:18px; }
+.member-pick-item{
+  display:flex; align-items:center; gap:12px; background: var(--surface); border:1px solid var(--steel);
+  border-radius: var(--radius); padding:13px; margin-bottom:8px; cursor:pointer;
+}
+.member-pick-item .mpi-avatar{
+  width:38px; height:38px; border-radius:50%; background: var(--surface-2); display:flex; align-items:center; justify-content:center;
+  font-family:'Oswald'; color: var(--iron); overflow:hidden; flex-shrink:0;
+}
+.member-pick-item .mpi-avatar img{ width:100%; height:100%; object-fit:cover; }
 </style>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAIAAADdvvtQAAACNElEQVR4nO3dsQ2CUBRAUTROQEHhCC7lbC7lCM5hYUGrXIhozukhP+TmVQ84jOM0wFLHbx+A3yYgEgGRCIhEQCQCIhEQiYBIBEQiIBIBkQiIREAkAiIREImASAREIiASAZEIiERAJAIiERCJgEgERCIgEgGRCIhEQCQCIhEQiYBIBEQiIBIBkQiIREAkAiIREImASAREIiASAZEIiERAJAIiERCJgEhOi6+8384rnuPlcn2sfs//s6snbwKRCIhEQCQCIhEQiYBIBEQiIBIBkQiIREAkAiIREImASAREMu8DvbllYmXnv32agQlEIiASAZEIiERAJAIiERCJgEgERCIgEgGRCIhEQCQCIhEQiYBIBEQiIJLln7jbwhYfb2NTJhCJgEgERCIgEgGRCIhEQCQCIhEQiYBIBEQiIBIBkQiIREAkAiIREImASAREIiASAZEIiERAJPt6L8x/FN6xq7fnTCASAZEIiERAJAIiERCJgEgERCIgEgGRCIhEQCQCIhEQiYBIBEQiIBIBkcwrrdZJGT7PwAQiERCJgEgERCIgEgGRCIhEQCQCIhEQiYBIBEQiIBIBkQiI5DCO07fPwA8zgUgERCIgEgGRCIhEQCQCIhEQiYBIBEQiIBIBkQiIREAkAiIREImASAREIiASAZEIiERAJAIiERCJgEgERCIgEgGRCIhEQCQCIhEQiYBIBEQiIBIBkQiIREAkAiIREImASAREIiASAZEIiERAJAIiERDJEyqAFWw/FWeIAAAAAElFTkSuQmCC">
@@ -436,6 +549,13 @@ nav.tabbar button.active svg{ stroke: var(--iron); }
     <div id="historyList"></div>
   </section>
 
+  <!-- FEES SECTION -->
+  <section id="sec-fees">
+    <div class="section-title"><h2>Membership & Fees</h2></div>
+    <div id="feesProfilePicker"></div>
+    <div id="feesBody"></div>
+  </section>
+
   <!-- SETTINGS SECTION -->
   <section id="sec-settings">
     <div class="section-title"><h2>Settings</h2></div>
@@ -464,6 +584,14 @@ nav.tabbar button.active svg{ stroke: var(--iron); }
     </div>
 
     <div class="settings-block">
+      <h3>MEMBERSHIP</h3>
+      <div class="settings-row">
+        <div><div class="st-lbl">Linked gym profile</div><div class="st-sub" id="linkedProfileSub">Not linked yet</div></div>
+        <button id="unlinkProfileBtn">CHANGE</button>
+      </div>
+    </div>
+
+    <div class="settings-block">
       <h3>ABOUT</h3>
       <div class="settings-row">
         <div><div class="st-lbl">Storage</div><div class="st-sub">100% local — nothing leaves your device</div></div>
@@ -488,6 +616,10 @@ nav.tabbar button.active svg{ stroke: var(--iron); }
   <button class="tab" data-tab="sec-progress">
     <svg viewBox="0 0 24 24"><path d="M4 20V10M11 20V4M18 20v-7"/></svg>
     Progress
+  </button>
+  <button class="tab" data-tab="sec-fees">
+    <svg viewBox="0 0 24 24"><rect x="2" y="6" width="20" height="13" rx="2"/><path d="M2 10h20"/><path d="M6 15h4"/></svg>
+    Fees
   </button>
   <button class="tab" data-tab="sec-settings">
     <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 13a1.7 1.7 0 00.34 1.87M4.6 13a1.7 1.7 0 00-1.55-1H3a2 2 0 110-4h.09a1.7 1.7 0 001.51-1.09M19.4 11a1.7 1.7 0 001.55-1H21a2 2 0 100-4h-.09a1.7 1.7 0 01-1.51-1.09M8 1.6a1.7 1.7 0 001.6 1H10a2 2 0 010 4h-.09M15 1.6a1.7 1.7 0 00-1.6 1H13a2 2 0 000 4h.09"/></svg>
@@ -541,6 +673,18 @@ nav.tabbar button.active svg{ stroke: var(--iron); }
       <button class="close-btn" id="closeDemoModal">✕</button>
     </div>
     <div id="demoBody"></div>
+  </div>
+</div>
+
+<!-- Photo Lightbox Viewer -->
+<div class="lightbox" id="lightbox">
+  <button class="lb-close" id="lbClose">✕</button>
+  <button class="lb-nav lb-prev" id="lbPrev">‹</button>
+  <img id="lbImage" src="" alt="Progress photo">
+  <button class="lb-nav lb-next" id="lbNext">›</button>
+  <div class="lb-footer">
+    <span id="lbDate"></span>
+    <button class="lb-delete" id="lbDelete">DELETE PHOTO</button>
   </div>
 </div>
 
@@ -1070,9 +1214,10 @@ const ExerciseDemo = (function(){
     const grid = $("#muscleGrid");
     grid.innerHTML = "";
     MUSCLE_GROUPS.forEach(m=>{
+      const customCount = window.getCustomExercises ? window.getCustomExercises(m.key).length : 0;
       const tile = document.createElement("button");
       tile.className = "muscle-tile";
-      tile.innerHTML = `<span class="dot" style="background:${m.color}"></span>${m.key}<span class="cnt">${EXERCISE_LIBRARY[m.key].length}</span>`;
+      tile.innerHTML = `<span class="dot" style="background:${m.color}"></span>${m.key}<span class="cnt">${EXERCISE_LIBRARY[m.key].length + customCount}</span>`;
       tile.addEventListener("click", ()=> openMuscleExercises(m.key));
       grid.appendChild(tile);
     });
@@ -1095,7 +1240,9 @@ const ExerciseDemo = (function(){
   function renderExercisePickList(filter){
     const wrap = $("#exercisePickerList");
     wrap.innerHTML = "";
-    const items = EXERCISE_LIBRARY[pickerMuscle].filter(ex =>
+    const gymExercises = (window.getCustomExercises ? window.getCustomExercises(pickerMuscle) : [])
+      .map(ex => ({ name: ex.name, equipment: ex.equipment || "", isGym: true }));
+    const items = [...gymExercises, ...EXERCISE_LIBRARY[pickerMuscle]].filter(ex =>
       ex.name.toLowerCase().includes(filter.toLowerCase())
     );
     if(!items.length){
@@ -1107,7 +1254,7 @@ const ExerciseDemo = (function(){
       row.className = "exercise-pick-item";
       row.innerHTML = `
         <div>
-          <div class="epn">${escapeHtml(ex.name)}</div>
+          <div class="epn">${escapeHtml(ex.name)}${ex.isGym ? ' <span class="gym-tag">GYM</span>':""}</div>
           <div class="epe">${escapeHtml(ex.equipment)}</div>
         </div>
         <div class="epick-right">
@@ -1163,6 +1310,14 @@ const ExerciseDemo = (function(){
     demoModal.classList.add("show");
     stopDemoAnimation();
 
+    // Custom exercises (with a gym-uploaded GIF) take priority over the
+    // public demo library, since they're specific to this gym's equipment/form.
+    const custom = window.findCustomExercise ? window.findCustomExercise(exerciseName) : null;
+    if(custom && custom.gif){
+      renderCustomDemo(custom);
+      return;
+    }
+
     ExerciseDemo.find(exerciseName).then(result=>{
       if(!demoModal.classList.contains("show")) return; // closed while loading
       if(!result){
@@ -1174,6 +1329,23 @@ const ExerciseDemo = (function(){
       if(!demoModal.classList.contains("show")) return;
       renderNoDemo(exerciseName, true);
     });
+  }
+
+  function renderCustomDemo(custom){
+    const body = $("#demoBody");
+    const meta = [];
+    if(custom.muscle) meta.push(custom.muscle);
+    if(custom.equipment) meta.push(custom.equipment);
+    const instructions = (custom.instructions||[]).filter(Boolean);
+    body.innerHTML = `
+      <div class="demo-frame">
+        <img src="${custom.gif}" alt="${escapeHtml(custom.name)} form demonstration">
+        <div class="demo-badge">GYM DEMO</div>
+      </div>
+      <div class="demo-meta">${meta.map(m=>`<span>${escapeHtml(m)}</span>`).join("")}</div>
+      ${instructions.length ? `<ol class="demo-instructions">${instructions.map(s=>`<li>${escapeHtml(s)}</li>`).join("")}</ol>` : ""}
+      <div class="demo-source">Demo added by your gym.</div>
+    `;
   }
 
   function renderDemo(result){
@@ -1326,7 +1498,7 @@ const ExerciseDemo = (function(){
     const grid = $("#photoGrid");
     grid.innerHTML = "";
     $("#photoCount").textContent = IronStore.db.photos.length;
-    IronStore.db.photos.forEach(p=>{
+    IronStore.db.photos.forEach((p, idx)=>{
       const item = document.createElement("div");
       item.className = "photo-item";
       item.innerHTML = `
@@ -1334,13 +1506,56 @@ const ExerciseDemo = (function(){
         <button class="pdel">✕</button>
         <div class="pdate">${p.date}</div>
       `;
-      item.querySelector(".pdel").addEventListener("click", ()=>{
+      item.querySelector(".pdel").addEventListener("click", (e)=>{
+        e.stopPropagation();
         IronStore.db.photos = IronStore.db.photos.filter(x=>x.id!==p.id);
         save(); renderPhotos();
       });
+      item.querySelector("img").addEventListener("click", ()=> openLightbox(idx));
       grid.appendChild(item);
     });
   }
+
+  // ---------- Photo Lightbox ----------
+  let lbIndex = 0;
+  const lightbox = $("#lightbox");
+  function openLightbox(idx){
+    lbIndex = idx;
+    renderLightbox();
+    lightbox.classList.add("show");
+  }
+  function renderLightbox(){
+    const photos = IronStore.db.photos;
+    if(!photos.length){ lightbox.classList.remove("show"); return; }
+    lbIndex = (lbIndex + photos.length) % photos.length;
+    const p = photos[lbIndex];
+    $("#lbImage").src = p.dataUrl;
+    $("#lbDate").textContent = p.date;
+  }
+  $("#lbClose").addEventListener("click", ()=> lightbox.classList.remove("show"));
+  $("#lbPrev").addEventListener("click", ()=>{ lbIndex--; renderLightbox(); });
+  $("#lbNext").addEventListener("click", ()=>{ lbIndex++; renderLightbox(); });
+  $("#lbDelete").addEventListener("click", ()=>{
+    const p = IronStore.db.photos[lbIndex];
+    if(!p) return;
+    if(confirm("Delete this photo?")){
+      IronStore.db.photos = IronStore.db.photos.filter(x=>x.id!==p.id);
+      save();
+      renderPhotos();
+      if(IronStore.db.photos.length) renderLightbox();
+      else lightbox.classList.remove("show");
+    }
+  });
+  lightbox.addEventListener("click", (e)=>{ if(e.target===lightbox) lightbox.classList.remove("show"); });
+  // Basic swipe support
+  let lbTouchStartX = null;
+  lightbox.addEventListener("touchstart", (e)=>{ lbTouchStartX = e.touches[0].clientX; }, {passive:true});
+  lightbox.addEventListener("touchend", (e)=>{
+    if(lbTouchStartX===null) return;
+    const dx = e.changedTouches[0].clientX - lbTouchStartX;
+    if(Math.abs(dx) > 50){ dx > 0 ? (lbIndex--, renderLightbox()) : (lbIndex++, renderLightbox()); }
+    lbTouchStartX = null;
+  }, {passive:true});
 
   // ---------- Progress ----------
   $all("#rangeToggle button").forEach(btn=>{
@@ -1511,7 +1726,8 @@ const ExerciseDemo = (function(){
 
   // ---------- Export / Import / Erase ----------
   $("#exportBtn").addEventListener("click", ()=>{
-    const blob = new Blob([JSON.stringify(IronStore.db, null, 2)], {type:"application/json"});
+    const combined = { workout: IronStore.db, gym: (window.GymStore ? window.GymStore.db : null) };
+    const blob = new Blob([JSON.stringify(combined, null, 2)], {type:"application/json"});
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url; a.download = `ironlog-backup-${todayStr()}.json`;
@@ -1527,9 +1743,16 @@ const ExerciseDemo = (function(){
     reader.onload = (ev)=>{
       try{
         const parsed = JSON.parse(ev.target.result);
-        IronStore.replaceDB(parsed);
+        if(parsed.workout || parsed.gym){
+          if(parsed.workout) IronStore.replaceDB(parsed.workout);
+          if(parsed.gym && window.GymStore) window.GymStore.replaceDB(parsed.gym);
+        } else {
+          // Older backup format: workout data only, no wrapper.
+          IronStore.replaceDB(parsed);
+        }
         setDate(currentDate);
         renderRoutineEditor();
+        if(window.dispatchEvent) window.dispatchEvent(new Event("ironlog:gym-import"));
         showToast("Backup imported");
       }catch(err){
         showToast("Invalid backup file");
@@ -1560,5 +1783,162 @@ const ExerciseDemo = (function(){
 })();
 
 </script>
+<script>
+/* ==========================================================================
+   IRONLOG — Shared Gym Data Reader + Fees Tab
+   Reads data your gym's Admin app writes into the SAME browser's localStorage
+   (works when both apps are hosted on the same site/origin — e.g. the same
+   GitHub Pages domain). Read-only from here: only the Admin app edits it.
+   ========================================================================== */
+(function(){
+  "use strict";
+  const $ = (sel, el=document) => el.querySelector(sel);
+  const $all = (sel, el=document) => Array.from(el.querySelectorAll(sel));
+  const GYM_KEY = "ironlog_gym_v1";
+  const CUSTOM_EX_KEY = "ironlog_custom_exercises_v1";
+  const LINK_KEY = "ironlog_linked_member_id";
+
+  function escapeHtml(s){ const d = document.createElement("div"); d.textContent = s ?? ""; return d.innerHTML; }
+  function todayStr(){
+    const d = new Date();
+    return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,'0')+"-"+String(d.getDate()).padStart(2,'0');
+  }
+  function showToast(msg){
+    const t = $("#toast");
+    if(!t) return;
+    t.textContent = msg; t.classList.add("show");
+    setTimeout(()=>t.classList.remove("show"), 1800);
+  }
+
+  function readGymDB(){
+    try{
+      const raw = localStorage.getItem(GYM_KEY);
+      return raw ? JSON.parse(raw) : null;
+    }catch(e){ return null; }
+  }
+  function readCustomExercises(){
+    try{
+      const raw = localStorage.getItem(CUSTOM_EX_KEY);
+      return raw ? JSON.parse(raw) : [];
+    }catch(e){ return []; }
+  }
+
+  // ---------- Exposed to the exercise picker / demo modal ----------
+  window.getCustomExercises = function(muscleKey){
+    return readCustomExercises().filter(ex => ex.muscle === muscleKey);
+  };
+  window.findCustomExercise = function(name){
+    const all = readCustomExercises();
+    const norm = (s)=> (s||"").toLowerCase().trim();
+    return all.find(ex => norm(ex.name) === norm(name)) || null;
+  };
+
+  // ---------- Fees tab ----------
+  const gymTabBtn = $('.tabbar .tab[data-tab="sec-fees"]');
+  if(gymTabBtn) gymTabBtn.addEventListener("click", renderFees);
+
+  function getLinkedId(){ return localStorage.getItem(LINK_KEY) || ""; }
+  function setLinkedId(id){ localStorage.setItem(LINK_KEY, id); }
+  function clearLinkedId(){ localStorage.removeItem(LINK_KEY); }
+
+  function planName(gymDB, planId){
+    const p = (gymDB.plans||[]).find(x=>x.id===planId);
+    return p ? p.name : "";
+  }
+  function memberStatus(m){
+    if(!m.membershipEnd) return "noplan";
+    return m.membershipEnd >= todayStr() ? "active" : "expired";
+  }
+
+  function renderFees(){
+    const gymDB = readGymDB();
+    const pickerWrap = $("#feesProfilePicker");
+    const body = $("#feesBody");
+    const linkedId = getLinkedId();
+
+    if(!gymDB || !gymDB.members || !gymDB.members.length){
+      pickerWrap.innerHTML = "";
+      body.innerHTML = `<div class="empty-state" style="padding:40px 20px;"><div class="big">💳</div><p>No gym membership data found on this device yet. Ask your gym to add you as a member in their Admin app on this same device/browser, then reopen this tab.</p></div>`;
+      updateLinkedProfileSetting(null);
+      return;
+    }
+
+    const member = gymDB.members.find(m=>m.id===linkedId);
+    if(!member){
+      renderProfilePicker(gymDB);
+      body.innerHTML = "";
+      updateLinkedProfileSetting(null);
+      return;
+    }
+
+    pickerWrap.innerHTML = "";
+    updateLinkedProfileSetting(member);
+    const status = memberStatus(member);
+    const payments = (gymDB.payments||[]).filter(p=>p.memberId===member.id).sort((a,b)=> b.date < a.date ? -1:1);
+    const totalPaid = payments.reduce((a,p)=>a+Number(p.amount||0),0);
+
+    body.innerHTML = `
+      <div class="profile-card">
+        <div class="profile-avatar">${member.photo ? `<img src="${member.photo}">` : escapeHtml((member.name||"?")[0].toUpperCase())}</div>
+        <div>
+          <div class="profile-name">${escapeHtml(member.name)}</div>
+          <div class="profile-plan">${member.planId ? escapeHtml(planName(gymDB, member.planId)) : "No active plan"}</div>
+        </div>
+        <span class="status-badge ${status}" style="margin-left:auto;">${status==="noplan"?"NO PLAN":status.toUpperCase()}</span>
+      </div>
+      <div class="fee-summary-grid">
+        <div class="stat-card"><div class="num">${totalPaid.toLocaleString()}</div><div class="lbl">TOTAL PAID</div></div>
+        <div class="stat-card"><div class="num">${member.membershipEnd || "—"}</div><div class="lbl">VALID UNTIL</div></div>
+      </div>
+      <div class="section-title"><h2 style="font-size:15px;">Payment History</h2></div>
+      ${payments.length ? payments.map(p=>`
+        <div class="payment-item">
+          <div class="pay-info"><div class="pn">${escapeHtml(p.method)}${p.note ? " • "+escapeHtml(p.note):""}</div><div class="pd">${p.date}</div></div>
+          <div class="pay-amt">${Number(p.amount).toLocaleString()}</div>
+        </div>`).join("") : `<div class="empty-state" style="padding:20px 10px;"><p>No payments recorded yet.</p></div>`}
+    `;
+  }
+
+  function renderProfilePicker(gymDB){
+    const wrap = $("#feesProfilePicker");
+    wrap.innerHTML = `
+      <div class="empty-state" style="padding-bottom:10px;">
+        <div class="big">👋</div>
+        <p>Which member are you? Pick your name below to see your plan and fee history.</p>
+      </div>
+    `;
+    gymDB.members.forEach(m=>{
+      const row = document.createElement("div");
+      row.className = "member-pick-item";
+      row.innerHTML = `
+        <div class="mpi-avatar">${m.photo ? `<img src="${m.photo}">`: escapeHtml((m.name||"?")[0].toUpperCase())}</div>
+        <div style="flex:1;">${escapeHtml(m.name)}</div>
+        <span style="color:var(--chalk-dim);">›</span>
+      `;
+      row.addEventListener("click", ()=>{
+        setLinkedId(m.id);
+        renderFees();
+        showToast("Linked to "+m.name);
+      });
+      wrap.appendChild(row);
+    });
+  }
+
+  function updateLinkedProfileSetting(member){
+    const sub = $("#linkedProfileSub");
+    if(!sub) return;
+    sub.textContent = member ? `Linked as ${member.name}` : "Not linked yet";
+  }
+  const unlinkBtn = $("#unlinkProfileBtn");
+  if(unlinkBtn){
+    unlinkBtn.addEventListener("click", ()=>{
+      clearLinkedId();
+      renderFees();
+      showToast("Profile unlinked — pick again in the Fees tab");
+    });
+  }
+})();
+</script>
 </body>
 </html>
+

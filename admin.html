@@ -1,0 +1,1567 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#121216">
+<meta name="description" content="IRONLOG Admin — gym management: members, plans, payments, attendance, trainers, and a custom exercise library with your own GIFs.">
+<title>IRONLOG ADMIN — Gym Management</title>
+<link rel="manifest" href="admin-manifest.json">
+<link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAMAAAADACAIAAADdvvtQAAACNElEQVR4nO3dsQ2CUBRAUTROQEHhCC7lbC7lCM5hYUGrXIhozukhP+TmVQ84jOM0wFLHbx+A3yYgEgGRCIhEQCQCIhEQiYBIBEQiIBIBkQiIREAkAiIREImASAREIiASAZEIiERAJAIiERCJgEgERCIgEgGRCIhEQCQCIhEQiYBIBEQiIBIBkQiIREAkAiIREImASAREIiASAZEIiERAJAIiERCJgEhOi6+8384rnuPlcn2sfs//s6snbwKRCIhEQCQCIhEQiYBIBEQiIBIBkQiIREAkAiIREImASAREMu8DvbllYmXnv32agQlEIiASAZEIiERAJAIiERCJgEgERCIgEgGRCIhEQCQCIhEQiYBIBEQiIJLln7jbwhYfb2NTJhCJgEgERCIgEgGRCIhEQCQCIhEQiYBIBEQiIBIBkQiIREAkAiIREImASAREIiASAZEIiERAJPt6L8x/FN6xq7fnTCASAZEIiERAJAIiERCJgEgERCIgEgGRCIhEQCQCIhEQiYBIBEQiIBIBkcwrrdZJGT7PwAQiERCJgEgERCIgEgGRCIhEQCQCIhEQiYBIBEQiIBIBkQiI5DCO07fPwA8zgUgERCIgEgGRCIhEQCQCIhEQiYBIBEQiIBIBkQiIREAkAiIREImASAREIiASAZEIiERAJAIiERCJgEgERCIgEgGRCIhEQCQCIhEQiYBIBEQiIBIBkQiIREAkAiIREImASAREIiASAZEIiERAJAIiERDJEyqAFWw/FWeIAAAAAElFTkSuQmCC">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="IronLog Admin">
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Oswald:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap');
+
+:root{
+  --bg: #121216;
+  --surface: #1b1b21;
+  --surface-2: #232329;
+  --steel: #33333c;
+  --iron: #E8B330;
+  --iron-dim: #a9822b;
+  --rust: #C4482E;
+  --chalk: #EDEAE3;
+  --chalk-dim: #8d8d95;
+  --green: #6FA85B;
+  --radius: 2px;
+}
+
+*{ box-sizing:border-box; -webkit-tap-highlight-color: transparent; }
+html,body{ margin:0; padding:0; }
+body{
+  background:
+    linear-gradient(180deg, rgba(0,0,0,.25), rgba(0,0,0,0) 120px),
+    var(--bg);
+  color: var(--chalk);
+  font-family: 'Inter', system-ui, sans-serif;
+  min-height: 100vh;
+  padding-bottom: 90px;
+}
+
+h1,h2,h3,.display{
+  font-family:'Oswald', sans-serif;
+  font-weight:600;
+  letter-spacing: 0.3px;
+  margin:0;
+}
+
+/* ---------- Header ---------- */
+header{
+  padding: 22px 18px 16px;
+  border-bottom: 3px solid var(--iron);
+  background: linear-gradient(180deg, #17171c, #121216);
+  position: sticky; top:0; z-index: 20;
+}
+.brand{ display:flex; align-items:baseline; justify-content:space-between; }
+.brand .logo{ font-family:'Oswald',sans-serif; font-weight:700; font-size:26px; color: var(--chalk); }
+.brand .logo span{ color: var(--iron); }
+.brand .tag{ font-size: 11px; color: var(--chalk-dim); letter-spacing: 1px; }
+
+.date-row{ margin-top: 14px; display:flex; align-items:center; gap: 10px; }
+.date-row button.nav{
+  background: var(--surface-2); border: 1px solid var(--steel);
+  color: var(--chalk); width: 36px; height:36px; font-size:16px;
+  border-radius: var(--radius); cursor:pointer;
+}
+.date-row .date-display{
+  flex:1; text-align:center; font-family:'Oswald',sans-serif; font-size: 16px;
+  background: var(--surface-2); border: 1px solid var(--steel);
+  padding: 8px 6px; border-radius: var(--radius);
+}
+.date-row .date-display small{ display:block; color: var(--chalk-dim); font-size: 11px; font-family:'Inter'; margin-top:2px; }
+.date-row .today-btn{
+  background: transparent; color: var(--iron); border:1px solid var(--iron-dim);
+  font-size: 11px; padding: 8px 10px; border-radius: var(--radius); cursor:pointer;
+}
+
+/* ---------- Main ---------- */
+main{ padding: 18px; max-width: 640px; margin: 0 auto; }
+section{ display:none; }
+section.active{ display:block; animation: fade .25s ease; }
+@keyframes fade{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:none;} }
+
+.section-title{ display:flex; align-items:center; justify-content:space-between; margin-bottom: 12px; gap: 10px; flex-wrap: wrap; }
+.section-title h2{ font-size:19px; }
+.count-pill{
+  font-size:12px; color: var(--bg); background: var(--iron);
+  padding: 3px 9px; border-radius: 20px; font-family:'Inter'; font-weight:600;
+}
+
+/* ---------- Routine label ---------- */
+.routine-bar{ display:flex; gap:8px; margin-bottom: 16px; overflow-x:auto; padding-bottom:4px; }
+.routine-chip{
+  flex: 0 0 auto; padding: 7px 13px; background: var(--surface-2);
+  border: 1px solid var(--steel); color: var(--chalk-dim);
+  font-family:'Oswald'; font-size:13px; border-radius: var(--radius);
+  cursor:pointer; white-space:nowrap;
+}
+.routine-chip.active{ border-color: var(--iron); color: var(--iron); background: rgba(232,179,48,0.08); }
+
+/* ---------- Exercise Card ---------- */
+.exercise-card{
+  background: var(--surface); border: 1px solid var(--steel);
+  border-left: 4px solid var(--muscle-color, var(--iron));
+  border-radius: var(--radius); margin-bottom: 12px; overflow:hidden;
+}
+.exercise-head{ display:flex; justify-content:space-between; align-items:flex-start; padding: 12px 14px 8px; gap: 8px; }
+.exercise-head .name{ font-family:'Oswald'; font-size:16px; font-weight:600; }
+.exercise-head .muscle-tag{
+  display:inline-flex; align-items:center; gap:5px; font-size:11px; color: var(--chalk-dim);
+  margin-top:4px;
+}
+.exercise-head .muscle-tag .dot{ width:8px; height:8px; border-radius:50%; background: var(--muscle-color, var(--iron)); display:inline-block; }
+.exercise-head .del{ background:none; border:none; color:#5c5c66; font-size:18px; cursor:pointer; padding:4px 6px; flex-shrink:0; }
+
+.set-table{ padding: 0 14px 12px; }
+.set-row{ display:grid; grid-template-columns: 26px 1fr 1fr 30px; gap: 8px; align-items:center; padding: 6px 0; border-top: 1px solid #242429; }
+.set-row.head-row{ border-top:none; font-size:10px; color: var(--chalk-dim); letter-spacing:.5px; padding-bottom:4px; }
+.set-row .set-num{ color: var(--chalk-dim); font-size:13px; text-align:center; font-family:'Oswald'; }
+.set-row input{
+  width:100%; background: var(--surface-2); border:1px solid var(--steel);
+  color: var(--chalk); padding:7px 6px; border-radius: var(--radius);
+  font-family:'Inter'; font-size:14px; text-align:center;
+}
+.set-row input:focus{ outline:none; border-color: var(--iron); }
+.set-row .chk{
+  width:26px; height:26px; border-radius: var(--radius); border:1px solid var(--steel);
+  background: var(--surface-2); cursor:pointer; display:flex; align-items:center; justify-content:center;
+  color: transparent; font-size:14px;
+}
+.set-row .chk.done{ background: var(--green); border-color: var(--green); color:#12210d; }
+
+.add-set-btn{
+  width: calc(100% - 28px); margin: 0 14px 12px; padding:9px; background:transparent;
+  border:1px dashed var(--steel); color: var(--chalk-dim); font-size:12px;
+  border-radius: var(--radius); cursor:pointer;
+}
+
+.add-exercise-btn{
+  width:100%; padding:14px; background: var(--surface); border:1px dashed var(--iron-dim);
+  color: var(--iron); font-family:'Oswald'; font-size:14px; border-radius: var(--radius); cursor:pointer;
+  margin-top: 4px;
+}
+
+.empty-state{ text-align:center; padding: 50px 20px; color: var(--chalk-dim); }
+.empty-state .big{ font-size:40px; margin-bottom:10px; }
+.empty-state p{ font-size:13px; line-height:1.5; max-width:300px; margin:0 auto; }
+
+/* ---------- Notes ---------- */
+.notes-box{ margin-top: 16px; }
+.notes-box label{ font-size:11px; color: var(--chalk-dim); display:block; margin-bottom:6px; letter-spacing:.5px;}
+.notes-box textarea{
+  width:100%; min-height:70px; background: var(--surface); border:1px solid var(--steel);
+  color: var(--chalk); padding:10px; border-radius: var(--radius); font-family:'Inter'; font-size:14px; resize:vertical;
+}
+
+/* ---------- Photos ---------- */
+.photo-upload-btn{
+  display:block; width:100%; padding: 22px; background: var(--surface); border:2px dashed var(--steel);
+  color: var(--chalk-dim); border-radius: var(--radius); cursor:pointer; text-align:center;
+  font-family:'Oswald'; font-size:14px; margin-bottom:16px;
+}
+.photo-upload-btn .sub{ font-family:'Inter'; font-size:11px; color:#666; }
+.photo-upload-btn:active{ border-color: var(--iron); color: var(--iron); }
+.photo-grid{ display:grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.photo-item{ position:relative; aspect-ratio: 3/4; border-radius: var(--radius); overflow:hidden; border:1px solid var(--steel); background: var(--surface-2); }
+.photo-item img{ width:100%; height:100%; object-fit:cover; display:block; }
+.photo-item .pdate{
+  position:absolute; bottom:0; left:0; right:0; background: linear-gradient(0deg, rgba(0,0,0,.85), transparent);
+  color: var(--chalk); font-size:9px; padding: 12px 5px 4px; text-align:center;
+}
+.photo-item .pdel{
+  position:absolute; top:3px; right:3px; background: rgba(0,0,0,.6); color:var(--chalk);
+  border:none; border-radius:50%; width:20px; height:20px; font-size:12px; cursor:pointer; line-height:1;
+}
+
+/* ---------- Progress ---------- */
+.stat-grid{ display:grid; grid-template-columns: repeat(3,1fr); gap:10px; margin-bottom:18px; }
+.stat-card{ background: var(--surface); border:1px solid var(--steel); border-radius: var(--radius); padding: 14px 8px; text-align:center; }
+.stat-card .num{ font-family:'Oswald'; font-size:24px; color: var(--iron); }
+.stat-card .lbl{ font-size:10px; color: var(--chalk-dim); margin-top:4px; letter-spacing:.4px;}
+
+.range-toggle{ display:flex; gap:4px; }
+.range-toggle button{
+  background: var(--surface-2); border:1px solid var(--steel); color: var(--chalk-dim);
+  font-size:11px; padding: 6px 9px; border-radius: var(--radius); cursor:pointer; font-family:'Inter'; font-weight:600;
+}
+.range-toggle button.active{ background: var(--iron); color: #141410; border-color: var(--iron); }
+
+.muscle-volume-list{ margin-bottom: 4px; }
+.mv-row{ margin-bottom: 10px; }
+.mv-row-top{ display:flex; justify-content:space-between; font-size:12px; margin-bottom:4px; }
+.mv-row-top .mv-name{ display:flex; align-items:center; gap:6px; font-family:'Oswald'; font-size:13px; }
+.mv-row-top .mv-name .dot{ width:8px; height:8px; border-radius:50%; }
+.mv-row-top .mv-val{ color: var(--chalk-dim); }
+.mv-bar-track{ height:8px; background: var(--surface-2); border-radius: 20px; overflow:hidden; }
+.mv-bar-fill{ height:100%; border-radius: 20px; transition: width .3s ease; }
+.hint{ font-size:11px; color: var(--chalk-dim); margin: 4px 0 20px; line-height:1.5; }
+
+.pr-item{
+  display:flex; justify-content:space-between; align-items:center;
+  background: var(--surface); border:1px solid var(--steel); border-left:3px solid var(--muscle-color, var(--iron));
+  border-radius: var(--radius); padding: 11px 14px; margin-bottom:8px;
+}
+.pr-item .pn{ font-family:'Oswald'; font-size:14px; }
+.pr-item .pm{ font-size:10px; color: var(--chalk-dim); margin-top:2px; }
+.pr-item .pv{ font-family:'Oswald'; font-size:16px; color: var(--iron); text-align:right; }
+.pr-item .pd{ font-size:9px; color: var(--chalk-dim); text-align:right; }
+
+.history-item{
+  background: var(--surface); border:1px solid var(--steel); border-left:3px solid var(--steel);
+  border-radius: var(--radius); padding: 12px 14px; margin-bottom:8px;
+  display:flex; justify-content:space-between; align-items:center; cursor:pointer;
+}
+.history-item.has-log{ border-left-color: var(--iron); }
+.history-item .hd{ font-family:'Oswald'; font-size:14px; }
+.history-item .hs{ font-size:11px; color: var(--chalk-dim); margin-top:2px; }
+.history-item .harrow{ color: var(--chalk-dim); }
+
+/* ---------- Bottom Nav ---------- */
+nav.tabbar{
+  position: fixed; bottom:0; left:0; right:0; background: #17171c; border-top: 1px solid var(--steel);
+  display:flex; z-index: 30; padding-bottom: env(safe-area-inset-bottom);
+}
+nav.tabbar button{
+  flex:1; background:none; border:none; color: var(--chalk-dim);
+  padding: 10px 4px 8px; font-family:'Inter'; font-size:10px; cursor:pointer;
+  display:flex; flex-direction:column; align-items:center; gap:4px;
+}
+nav.tabbar button svg{ width:20px; height:20px; stroke: var(--chalk-dim); fill:none; stroke-width:1.8; }
+nav.tabbar button.active{ color: var(--iron); }
+nav.tabbar button.active svg{ stroke: var(--iron); }
+
+/* ---------- Modal ---------- */
+.modal-backdrop{ position:fixed; inset:0; background: rgba(0,0,0,.6); z-index:50; display:none; align-items:flex-end; justify-content:center; }
+.modal-backdrop.show{ display:flex; }
+.modal{
+  background: var(--surface); width:100%; max-width:640px;
+  border-top: 3px solid var(--iron); border-radius: 10px 10px 0 0;
+  padding: 20px 18px calc(20px + env(safe-area-inset-bottom));
+  max-height: 80vh; overflow-y:auto;
+}
+.modal.modal-tall{ max-height: 85vh; }
+.modal h3{ font-size:17px; margin-bottom:14px; }
+.modal input, .modal select{
+  width:100%; background: var(--surface-2); border:1px solid var(--steel); color:var(--chalk);
+  padding: 12px; border-radius: var(--radius); font-family:'Inter'; font-size:15px; margin-bottom:10px;
+}
+.modal-actions{ display:flex; gap:10px; margin-top:6px; }
+.btn{ flex:1; padding:13px; border-radius: var(--radius); border:none; cursor:pointer; font-family:'Oswald'; font-size:14px; letter-spacing:.3px; }
+.btn-primary{ background: var(--iron); color:#141410; font-weight:600; }
+.btn-ghost{ background: transparent; color: var(--chalk-dim); border:1px solid var(--steel); }
+
+/* ---------- Muscle Picker ---------- */
+.muscle-grid{ display:grid; grid-template-columns: repeat(2, 1fr); gap:8px; margin-bottom: 16px; }
+.muscle-tile{
+  display:flex; align-items:center; gap:9px; padding: 13px 12px;
+  background: var(--surface-2); border:1px solid var(--steel); border-radius: var(--radius);
+  cursor:pointer; font-family:'Oswald'; font-size:14px; color: var(--chalk);
+}
+.muscle-tile .dot{ width:12px; height:12px; border-radius:50%; flex-shrink:0; }
+.muscle-tile .cnt{ margin-left:auto; font-family:'Inter'; font-size:10px; color: var(--chalk-dim); }
+
+.picker-step2-head{ display:flex; align-items:center; gap:10px; margin-bottom:12px; }
+.back-btn{ background:none; border:none; color: var(--iron); font-family:'Oswald'; font-size:13px; cursor:pointer; padding:4px 0; }
+.exercise-picker-list{ max-height: 40vh; overflow-y:auto; margin-bottom: 12px; border-top:1px solid var(--steel); }
+.exercise-pick-item{
+  display:flex; justify-content:space-between; align-items:center;
+  padding: 13px 4px; border-bottom: 1px solid #242429; cursor:pointer;
+}
+.exercise-pick-item .epn{ font-size:14px; }
+.exercise-pick-item .epe{ font-size:10px; color: var(--chalk-dim); margin-top:2px; }
+.exercise-pick-item .epa{ color: var(--iron); font-size:18px; }
+.custom-exercise-row{ display:flex; gap:8px; align-items:flex-start; }
+.custom-exercise-row input{ margin-bottom:0; flex:1; }
+.custom-exercise-row button{ flex: 0 0 auto; padding: 12px 16px; }
+.no-results{ padding: 16px 4px; color: var(--chalk-dim); font-size:13px; text-align:center; }
+
+.toast{
+  position: fixed; bottom: 78px; left:50%; transform: translateX(-50%);
+  background: var(--iron); color:#141410; padding: 10px 18px; border-radius: var(--radius);
+  font-family:'Oswald'; font-size:13px; z-index: 60; opacity:0; pointer-events:none;
+  transition: opacity .25s, transform .25s;
+}
+.toast.show{ opacity:1; transform: translateX(-50%) translateY(-6px); }
+
+.settings-block{ margin-bottom: 22px; }
+.settings-block h3{ font-size:13px; color: var(--chalk-dim); letter-spacing:.5px; margin-bottom:10px; }
+.settings-row{
+  display:flex; justify-content:space-between; align-items:center;
+  background: var(--surface); border:1px solid var(--steel); border-radius: var(--radius);
+  padding: 14px; margin-bottom:8px;
+}
+.settings-row .st-lbl{ font-size:14px; }
+.settings-row .st-sub{ font-size:11px; color: var(--chalk-dim); margin-top:2px; }
+.settings-row button{
+  background: var(--surface-2); border:1px solid var(--steel); color: var(--chalk);
+  padding: 8px 14px; border-radius: var(--radius); font-size:12px; cursor:pointer;
+}
+.settings-row button.danger{ color: var(--rust); border-color: var(--rust); background:transparent; }
+
+/* ---------- How-To Demo ---------- */
+.howto-btn{
+  background: var(--surface-2); border:1px solid var(--steel); color: var(--iron);
+  width:30px; height:30px; border-radius: var(--radius); cursor:pointer;
+  font-size:13px; flex-shrink:0; display:flex; align-items:center; justify-content:center;
+}
+.exercise-head .head-actions{ display:flex; gap:6px; flex-shrink:0; }
+.exercise-pick-item{ align-items:center; }
+.epick-right{ display:flex; align-items:center; gap:8px; }
+
+.demo-head{ display:flex; justify-content:space-between; align-items:center; margin-bottom:14px; }
+.demo-head h3{ font-size:17px; padding-right:10px; }
+.close-btn{ background: var(--surface-2); border:1px solid var(--steel); color: var(--chalk); width:30px; height:30px; border-radius: var(--radius); cursor:pointer; flex-shrink:0; }
+
+.demo-frame{
+  width:100%; aspect-ratio: 1/1; background: var(--surface-2); border:1px solid var(--steel);
+  border-radius: var(--radius); display:flex; align-items:center; justify-content:center;
+  overflow:hidden; margin-bottom:14px; position:relative;
+}
+.demo-frame img{ width:100%; height:100%; object-fit:contain; }
+.demo-frame .demo-loading, .demo-frame .demo-empty{
+  color: var(--chalk-dim); font-size:13px; text-align:center; padding:20px; line-height:1.6;
+}
+.demo-frame .demo-badge{
+  position:absolute; bottom:8px; right:8px; background: rgba(0,0,0,.7); color: var(--iron);
+  font-size:9px; padding:3px 7px; border-radius:20px; font-family:'Oswald'; letter-spacing:.5px;
+}
+.demo-meta{ display:flex; gap:6px; flex-wrap:wrap; margin-bottom:14px; }
+.demo-meta span{
+  font-size:10px; color: var(--chalk-dim); background: var(--surface-2); border:1px solid var(--steel);
+  padding: 4px 9px; border-radius:20px; text-transform:capitalize;
+}
+.demo-instructions{ list-style:none; padding:0; margin:0 0 6px; counter-reset: step; }
+.demo-instructions li{
+  counter-increment: step; padding: 10px 0 10px 32px; position:relative;
+  border-top:1px solid #242429; font-size:13px; line-height:1.5; color: var(--chalk);
+}
+.demo-instructions li:first-child{ border-top:none; }
+.demo-instructions li::before{
+  content: counter(step); position:absolute; left:0; top:10px;
+  width:20px; height:20px; border-radius:50%; background: var(--surface-2); border:1px solid var(--iron-dim);
+  color: var(--iron); font-family:'Oswald'; font-size:11px; display:flex; align-items:center; justify-content:center;
+}
+.demo-source{ font-size:10px; color:#5c5c66; margin-top:10px; line-height:1.5; }
+.demo-source a{ color: var(--chalk-dim); }
+.demo-search-btn{
+  display:block; width:100%; text-align:center; padding:12px; margin-top:6px;
+  background: var(--surface-2); border:1px solid var(--steel); color: var(--iron);
+  border-radius: var(--radius); font-family:'Oswald'; font-size:13px; text-decoration:none;
+}
+
+/* ---------- Gym Management ---------- */
+.gym-subnav{ display:flex; gap:8px; overflow-x:auto; padding-bottom:10px; margin-bottom:6px; }
+.gym-tab{
+  flex:0 0 auto; padding:8px 14px; background: var(--surface-2); border:1px solid var(--steel);
+  color: var(--chalk-dim); font-family:'Oswald'; font-size:13px; border-radius: var(--radius); cursor:pointer; white-space:nowrap;
+}
+.gym-tab.active{ border-color: var(--iron); color: var(--iron); background: rgba(232,179,48,0.08); }
+.gym-panel{ display:none; }
+.gym-panel.active{ display:block; animation: fade .2s ease; }
+
+#memberSearch, #attendanceSearch{
+  width:100%; background: var(--surface-2); border:1px solid var(--steel); color: var(--chalk);
+  padding:11px; border-radius: var(--radius); font-size:14px; margin-bottom:12px;
+}
+
+.member-card, .plan-card, .payment-item, .trainer-card{
+  display:flex; align-items:center; gap:12px; background: var(--surface); border:1px solid var(--steel);
+  border-left:3px solid var(--iron); border-radius: var(--radius); padding:12px 14px; margin-bottom:8px; cursor:pointer;
+}
+.plan-card, .trainer-card{ cursor:default; justify-content:space-between; }
+.payment-item{ cursor:default; }
+.member-avatar{
+  width:42px; height:42px; border-radius:50%; background: var(--surface-2); border:1px solid var(--steel);
+  flex-shrink:0; display:flex; align-items:center; justify-content:center; font-family:'Oswald'; font-size:16px; color: var(--iron); overflow:hidden;
+}
+.member-avatar img{ width:100%; height:100%; object-fit:cover; }
+.member-info{ flex:1; min-width:0; }
+.member-info .mn{ font-family:'Oswald'; font-size:15px; }
+.member-info .mp{ font-size:11px; color: var(--chalk-dim); margin-top:2px; }
+.status-badge{ font-size:9px; padding:3px 8px; border-radius:20px; font-family:'Oswald'; letter-spacing:.3px; flex-shrink:0; }
+.status-badge.active{ background: rgba(111,168,91,0.15); color: var(--green); }
+.status-badge.expired{ background: rgba(196,72,46,0.15); color: var(--rust); }
+.status-badge.noplan{ background: var(--surface-2); color: var(--chalk-dim); }
+
+.plan-card .pc-name{ font-family:'Oswald'; font-size:15px; }
+.plan-card .pc-meta{ font-size:11px; color: var(--chalk-dim); margin-top:2px; }
+.plan-card .pc-actions{ display:flex; gap:6px; }
+.plan-card .pc-actions button{ background: var(--surface-2); border:1px solid var(--steel); color: var(--chalk); width:28px; height:28px; border-radius:2px; cursor:pointer; font-size:12px; }
+.plan-card .pc-actions button.danger{ color: var(--rust); border-color: var(--rust); }
+
+.payment-item .pay-info .pn{ font-family:'Oswald'; font-size:14px; }
+.payment-item .pay-info .pd{ font-size:11px; color: var(--chalk-dim); margin-top:2px; }
+.payment-item .pay-amt{ font-family:'Oswald'; font-size:16px; color: var(--iron); margin-left:auto; }
+
+.trainer-card .tc-name{ font-family:'Oswald'; font-size:15px; }
+.trainer-card .tc-meta{ font-size:11px; color: var(--chalk-dim); margin-top:2px; }
+
+.field-label{ font-size:11px; color: var(--chalk-dim); display:block; margin-bottom:6px; letter-spacing:.5px; }
+.checkbox-row{ display:flex; align-items:center; gap:8px; font-size:13px; color: var(--chalk-dim); margin: 6px 0 10px; }
+.checkbox-row input{ width:auto; margin:0; }
+.photo-upload-btn.small{ padding:14px; font-size:12px; margin-bottom:12px; }
+
+.detail-stat-row{ display:flex; justify-content:space-between; padding:10px 0; border-top:1px solid #242429; font-size:13px; }
+.detail-stat-row:first-child{ border-top:none; }
+.detail-stat-row .dsl{ color: var(--chalk-dim); }
+.detail-actions{ display:flex; gap:8px; margin-top:16px; flex-wrap:wrap; }
+.detail-actions button{ flex:1; min-width:100px; }
+
+</style>
+
+/* ---------- Admin: Exercise Manager ---------- */
+.admin-ex-card{
+  display:flex; gap:12px; background: var(--surface); border:1px solid var(--steel);
+  border-left:3px solid var(--iron); border-radius: var(--radius); padding:12px; margin-bottom:10px;
+}
+.admin-ex-thumb{
+  width:64px; height:64px; border-radius:4px; background: var(--surface-2); border:1px solid var(--steel);
+  flex-shrink:0; overflow:hidden; display:flex; align-items:center; justify-content:center; color: var(--chalk-dim); font-size:22px;
+}
+.admin-ex-thumb img{ width:100%; height:100%; object-fit:cover; }
+.admin-ex-info{ flex:1; min-width:0; }
+.admin-ex-info .an{ font-family:'Oswald'; font-size:15px; }
+.admin-ex-info .am{ font-size:11px; color: var(--chalk-dim); margin-top:2px; }
+.admin-ex-actions{ display:flex; flex-direction:column; gap:6px; }
+.admin-ex-actions button{ background: var(--surface-2); border:1px solid var(--steel); color: var(--chalk); width:30px; height:30px; border-radius:2px; cursor:pointer; font-size:12px; }
+.admin-ex-actions button.danger{ color: var(--rust); border-color: var(--rust); }
+.gif-preview{
+  width:100%; aspect-ratio:1/1; max-height:220px; background: var(--surface-2); border:1px dashed var(--steel);
+  border-radius: var(--radius); display:flex; align-items:center; justify-content:center; overflow:hidden; margin-bottom:10px; color: var(--chalk-dim); font-size:12px; text-align:center;
+}
+.gif-preview img{ width:100%; height:100%; object-fit:contain; }
+.brand .badge-admin{ font-size:9px; background: var(--rust); color:#fff; padding:2px 7px; border-radius:20px; margin-left:8px; vertical-align:middle; font-family:'Inter'; letter-spacing:.5px; }
+
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <div>
+      <div class="logo">IRON<span>LOG</span><span class="badge-admin">ADMIN</span></div>
+      <div class="tag">GYM MANAGEMENT SYSTEM</div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="gym-subnav" id="gymSubnav">
+      <button class="gym-tab active" data-gym="dashboard">Dashboard</button>
+      <button class="gym-tab" data-gym="exercises">Exercises</button>
+      <button class="gym-tab" data-gym="members">Members</button>
+      <button class="gym-tab" data-gym="plans">Plans</button>
+      <button class="gym-tab" data-gym="payments">Payments</button>
+      <button class="gym-tab" data-gym="attendance">Attendance</button>
+      <button class="gym-tab" data-gym="trainers">Trainers</button>
+      <button class="gym-tab" data-gym="settings">Settings</button>
+    </div>
+
+  <div class="gym-panel active" id="gym-dashboard">
+      <div class="stat-grid">
+        <div class="stat-card"><div class="num" id="gymTotalMembers">0</div><div class="lbl">TOTAL MEMBERS</div></div>
+        <div class="stat-card"><div class="num" id="gymActiveMembers">0</div><div class="lbl">ACTIVE</div></div>
+        <div class="stat-card"><div class="num" id="gymExpiredMembers">0</div><div class="lbl">EXPIRED</div></div>
+      </div>
+      <div class="stat-grid">
+        <div class="stat-card"><div class="num" id="gymTodayCheckins">0</div><div class="lbl">CHECK-INS TODAY</div></div>
+        <div class="stat-card"><div class="num" id="gymMonthRevenue">0</div><div class="lbl">REVENUE (30D)</div></div>
+        <div class="stat-card"><div class="num" id="gymExpiringSoon">0</div><div class="lbl">EXPIRING ≤7D</div></div>
+      </div>
+      <div class="section-title"><h2 style="font-size:15px;">Expiring Soon</h2></div>
+      <div id="gymExpiringList"></div>
+    </div>
+
+    <div class="gym-panel" id="gym-exercises">
+      <div class="section-title"><h2 style="font-size:15px;">Custom Exercises</h2><span class="count-pill" id="customExCount">0</span></div>
+      <p class="hint">Add your gym's own exercises with a GIF or photo showing correct form. These show up automatically in the member app's exercise picker, tagged "GYM".</p>
+      <input type="text" id="exManageSearch" placeholder="Search your custom exercises...">
+      <div id="customExerciseList"></div>
+      <button class="add-exercise-btn" id="addCustomExBtn">+ ADD EXERCISE</button>
+    </div>
+
+    <div class="gym-panel" id="gym-members">
+      <div class="section-title"><h2 style="font-size:15px;">Members</h2><span class="count-pill" id="gymMemberCount">0</span></div>
+      <input type="text" id="memberSearch" placeholder="Search members by name or phone...">
+      <div id="memberList"></div>
+      <button class="add-exercise-btn" id="addMemberBtn">+ ADD MEMBER</button>
+    </div>
+
+    <div class="gym-panel" id="gym-plans">
+      <div class="section-title"><h2 style="font-size:15px;">Membership Plans</h2></div>
+      <div id="planList"></div>
+      <button class="add-exercise-btn" id="addPlanBtn">+ ADD PLAN</button>
+    </div>
+
+    <div class="gym-panel" id="gym-payments">
+      <div class="section-title"><h2 style="font-size:15px;">Payments</h2><span class="count-pill" id="paymentCount">0</span></div>
+      <div id="paymentList"></div>
+      <button class="add-exercise-btn" id="addPaymentBtn">+ RECORD PAYMENT</button>
+    </div>
+
+    <div class="gym-panel" id="gym-attendance">
+      <div class="section-title">
+        <h2 style="font-size:15px;">Attendance</h2>
+        <span class="count-pill" id="attendanceCountPill">0 checked in</span>
+      </div>
+      <div class="date-row" style="margin-bottom:14px;">
+        <button class="nav" id="attPrevDay">‹</button>
+        <div class="date-display" id="attDateDisplay">—</div>
+        <button class="nav" id="attNextDay">›</button>
+      </div>
+      <input type="text" id="attendanceSearch" placeholder="Search members to check in...">
+      <div id="attendanceList"></div>
+    </div>
+
+    <div class="gym-panel" id="gym-trainers">
+      <div class="section-title"><h2 style="font-size:15px;">Trainers & Staff</h2></div>
+      <div id="trainerList"></div>
+      <button class="add-exercise-btn" id="addTrainerBtn">+ ADD TRAINER</button>
+    </div>
+
+<div class="gym-panel" id="gym-settings">
+      <div class="settings-block">
+        <h3>YOUR DATA</h3>
+        <div class="settings-row">
+          <div><div class="st-lbl">Export backup</div><div class="st-sub">Download members, plans, payments & custom exercises</div></div>
+          <button id="adminExportBtn">EXPORT</button>
+        </div>
+        <div class="settings-row">
+          <div><div class="st-lbl">Import backup</div><div class="st-sub">Restore from a JSON file</div></div>
+          <button id="adminImportBtn">IMPORT</button>
+        </div>
+        <input type="file" id="adminImportInput" accept="application/json" style="display:none;">
+      </div>
+      <div class="settings-block">
+        <h3>DANGER ZONE</h3>
+        <div class="settings-row">
+          <div><div class="st-lbl">Erase gym data</div><div class="st-sub">Deletes members, plans, payments, attendance & trainers</div></div>
+          <button class="danger" id="adminEraseGymBtn">ERASE</button>
+        </div>
+        <div class="settings-row">
+          <div><div class="st-lbl">Erase custom exercises</div><div class="st-sub">Deletes all gym-added exercises & GIFs</div></div>
+          <button class="danger" id="adminEraseExBtn">ERASE</button>
+        </div>
+      </div>
+      <div class="settings-block">
+        <h3>ABOUT</h3>
+        <div class="settings-row">
+          <div><div class="st-lbl">Storage</div><div class="st-sub">100% local — nothing leaves this device. Share the same origin (e.g. same GitHub Pages site) as the Member app so data lines up.</div></div>
+        </div>
+      </div>
+    </div>
+  
+</main>
+
+<!-- Member Modal (Add/Edit) -->
+<div class="modal-backdrop" id="memberModal">
+  <div class="modal modal-tall">
+    <h3 id="memberModalTitle">Add Member</h3>
+    <label class="photo-upload-btn small" for="memberPhotoInput" id="memberPhotoLabel">📷 ADD PHOTO (OPTIONAL)</label>
+    <input type="file" id="memberPhotoInput" accept="image/*" style="display:none;">
+    <input type="text" id="memberNameInput" placeholder="Full name">
+    <input type="tel" id="memberPhoneInput" placeholder="Phone number">
+    <input type="email" id="memberEmailInput" placeholder="Email (optional)">
+    <label class="field-label">JOIN DATE</label>
+    <input type="date" id="memberJoinInput">
+    <label class="field-label">MEMBERSHIP PLAN</label>
+    <select id="memberPlanInput"><option value="">No plan</option></select>
+    <textarea id="memberNotesInput" placeholder="Notes (medical info, goals, etc.)" style="width:100%;min-height:60px;background:var(--surface-2);border:1px solid var(--steel);color:var(--chalk);padding:10px;border-radius:2px;font-family:'Inter';font-size:14px;margin-bottom:10px;"></textarea>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="cancelMember">CANCEL</button>
+      <button class="btn btn-primary" id="confirmMember">SAVE</button>
+    </div>
+  </div>
+</div>
+
+<!-- Member Detail Modal -->
+<div class="modal-backdrop" id="memberDetailModal">
+  <div class="modal modal-tall">
+    <div class="demo-head">
+      <h3 id="detailMemberName">Member</h3>
+      <button class="close-btn" id="closeMemberDetail">✕</button>
+    </div>
+    <div id="memberDetailBody"></div>
+  </div>
+</div>
+
+<!-- Plan Modal -->
+<div class="modal-backdrop" id="planModal">
+  <div class="modal">
+    <h3>Membership Plan</h3>
+    <input type="text" id="planNameInput" placeholder="Plan name (e.g. Monthly, Quarterly)">
+    <div class="row2">
+      <input type="number" id="planDurationInput" placeholder="Duration (days)" min="1">
+      <input type="number" id="planPriceInput" placeholder="Price" min="0">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="cancelPlan">CANCEL</button>
+      <button class="btn btn-primary" id="confirmPlan">SAVE</button>
+    </div>
+  </div>
+</div>
+
+<!-- Payment Modal -->
+<div class="modal-backdrop" id="paymentModal">
+  <div class="modal">
+    <h3>Record Payment</h3>
+    <select id="paymentMemberInput"><option value="">Select member</option></select>
+    <div class="row2">
+      <input type="number" id="paymentAmountInput" placeholder="Amount" min="0">
+      <input type="date" id="paymentDateInput">
+    </div>
+    <select id="paymentMethodInput">
+      <option>Cash</option><option>UPI</option><option>Card</option><option>Bank Transfer</option><option>Other</option>
+    </select>
+    <input type="text" id="paymentNoteInput" placeholder="Note (optional)">
+    <label class="checkbox-row"><input type="checkbox" id="paymentRenewInput" checked> Extend membership by this member's plan duration</label>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="cancelPayment">CANCEL</button>
+      <button class="btn btn-primary" id="confirmPayment">SAVE</button>
+    </div>
+  </div>
+</div>
+
+<!-- Trainer Modal -->
+<div class="modal-backdrop" id="trainerModal">
+  <div class="modal">
+    <h3>Trainer / Staff</h3>
+    <input type="text" id="trainerNameInput" placeholder="Full name">
+    <input type="tel" id="trainerPhoneInput" placeholder="Phone number">
+    <input type="text" id="trainerSpecialtyInput" placeholder="Specialty (e.g. Strength, Yoga, Cardio)">
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="cancelTrainer">CANCEL</button>
+      <button class="btn btn-primary" id="confirmTrainer">SAVE</button>
+    </div>
+  </div>
+</div>
+
+
+
+<!-- Custom Exercise Modal -->
+<div class="modal-backdrop" id="exerciseFormModal">
+  <div class="modal modal-tall">
+    <h3 id="exFormTitle">Add Exercise</h3>
+    <div class="gif-preview" id="exGifPreview">No GIF selected yet</div>
+    <label class="photo-upload-btn small" for="exGifInput">🎞️ UPLOAD GIF / IMAGE</label>
+    <input type="file" id="exGifInput" accept="image/*" style="display:none;">
+    <input type="text" id="exFormName" placeholder="Exercise name">
+    <select id="exFormMuscle"></select>
+    <input type="text" id="exFormEquipment" placeholder="Equipment (optional)">
+    <textarea id="exFormInstructions" placeholder="Step-by-step instructions, one per line (optional)" style="width:100%;min-height:90px;background:var(--surface-2);border:1px solid var(--steel);color:var(--chalk);padding:10px;border-radius:2px;font-family:'Inter';font-size:14px;margin-bottom:10px;"></textarea>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" id="cancelExForm">CANCEL</button>
+      <button class="btn btn-primary" id="confirmExForm">SAVE</button>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+/* ==========================================================================
+   IRONLOG — Exercise Library
+   Exercises grouped by individual muscle for targeted, effective progress.
+   Each muscle has a display color used for chips, bars, and tags.
+   ========================================================================== */
+
+const MUSCLE_GROUPS = [
+  { key: "Chest",      color: "#E8B330" },
+  { key: "Back",       color: "#5FA8D3" },
+  { key: "Shoulders",  color: "#C4482E" },
+  { key: "Biceps",     color: "#8CC084" },
+  { key: "Triceps",    color: "#D98E4A" },
+  { key: "Forearms",   color: "#B79A6B" },
+  { key: "Quads",      color: "#D6564C" },
+  { key: "Hamstrings", color: "#9B6BC7" },
+  { key: "Glutes",     color: "#E06B9F" },
+  { key: "Calves",     color: "#5CBFA6" },
+  { key: "Abs",        color: "#E8D830" },
+  { key: "Cardio",     color: "#6FA85B" }
+];
+
+const EXERCISE_LIBRARY = {
+  Chest: [
+    { name: "Barbell Bench Press",        equipment: "Barbell" },
+    { name: "Incline Barbell Press",       equipment: "Barbell" },
+    { name: "Dumbbell Bench Press",        equipment: "Dumbbell" },
+    { name: "Incline Dumbbell Press",      equipment: "Dumbbell" },
+    { name: "Chest Fly (Dumbbell)",        equipment: "Dumbbell" },
+    { name: "Cable Crossover",             equipment: "Cable" },
+    { name: "Push-Up",                     equipment: "Bodyweight" },
+    { name: "Dips (Chest Focus)",          equipment: "Bodyweight" },
+    { name: "Machine Chest Press",         equipment: "Machine" },
+    { name: "Pec Deck Machine",            equipment: "Machine" }
+  ],
+  Back: [
+    { name: "Deadlift",                    equipment: "Barbell" },
+    { name: "Pull-Up",                     equipment: "Bodyweight" },
+    { name: "Lat Pulldown",                equipment: "Cable" },
+    { name: "Barbell Row",                 equipment: "Barbell" },
+    { name: "Seated Cable Row",            equipment: "Cable" },
+    { name: "One-Arm Dumbbell Row",        equipment: "Dumbbell" },
+    { name: "T-Bar Row",                   equipment: "Barbell" },
+    { name: "Face Pull",                   equipment: "Cable" },
+    { name: "Chin-Up",                     equipment: "Bodyweight" },
+    { name: "Hyperextension",              equipment: "Bodyweight" }
+  ],
+  Shoulders: [
+    { name: "Overhead Press",              equipment: "Barbell" },
+    { name: "Dumbbell Shoulder Press",     equipment: "Dumbbell" },
+    { name: "Lateral Raise",               equipment: "Dumbbell" },
+    { name: "Front Raise",                 equipment: "Dumbbell" },
+    { name: "Rear Delt Fly",               equipment: "Dumbbell" },
+    { name: "Arnold Press",                equipment: "Dumbbell" },
+    { name: "Cable Lateral Raise",         equipment: "Cable" },
+    { name: "Upright Row",                 equipment: "Barbell" },
+    { name: "Shrugs",                      equipment: "Dumbbell" }
+  ],
+  Biceps: [
+    { name: "Barbell Curl",                equipment: "Barbell" },
+    { name: "Dumbbell Curl",               equipment: "Dumbbell" },
+    { name: "Hammer Curl",                 equipment: "Dumbbell" },
+    { name: "Preacher Curl",               equipment: "Barbell" },
+    { name: "Incline Dumbbell Curl",       equipment: "Dumbbell" },
+    { name: "Cable Curl",                  equipment: "Cable" },
+    { name: "Concentration Curl",          equipment: "Dumbbell" }
+  ],
+  Triceps: [
+    { name: "Close-Grip Bench Press",      equipment: "Barbell" },
+    { name: "Tricep Pushdown",             equipment: "Cable" },
+    { name: "Skull Crusher",               equipment: "Barbell" },
+    { name: "Overhead Tricep Extension",   equipment: "Dumbbell" },
+    { name: "Dips (Triceps Focus)",        equipment: "Bodyweight" },
+    { name: "Kickback",                    equipment: "Dumbbell" },
+    { name: "Rope Pushdown",               equipment: "Cable" }
+  ],
+  Forearms: [
+    { name: "Wrist Curl",                  equipment: "Barbell" },
+    { name: "Reverse Wrist Curl",          equipment: "Barbell" },
+    { name: "Farmer's Carry",              equipment: "Dumbbell" },
+    { name: "Reverse Curl",                equipment: "Barbell" },
+    { name: "Plate Pinch Hold",            equipment: "Plate" }
+  ],
+  Quads: [
+    { name: "Back Squat",                  equipment: "Barbell" },
+    { name: "Front Squat",                 equipment: "Barbell" },
+    { name: "Leg Press",                   equipment: "Machine" },
+    { name: "Leg Extension",               equipment: "Machine" },
+    { name: "Walking Lunge",               equipment: "Dumbbell" },
+    { name: "Bulgarian Split Squat",       equipment: "Dumbbell" },
+    { name: "Goblet Squat",                equipment: "Dumbbell" },
+    { name: "Hack Squat",                  equipment: "Machine" }
+  ],
+  Hamstrings: [
+    { name: "Romanian Deadlift",           equipment: "Barbell" },
+    { name: "Leg Curl (Lying)",            equipment: "Machine" },
+    { name: "Leg Curl (Seated)",           equipment: "Machine" },
+    { name: "Good Morning",                equipment: "Barbell" },
+    { name: "Stiff-Leg Deadlift",          equipment: "Dumbbell" },
+    { name: "Nordic Curl",                 equipment: "Bodyweight" }
+  ],
+  Glutes: [
+    { name: "Hip Thrust",                  equipment: "Barbell" },
+    { name: "Glute Bridge",                equipment: "Barbell" },
+    { name: "Cable Kickback",              equipment: "Cable" },
+    { name: "Sumo Deadlift",               equipment: "Barbell" },
+    { name: "Step-Up",                     equipment: "Dumbbell" },
+    { name: "Hip Abduction Machine",       equipment: "Machine" }
+  ],
+  Calves: [
+    { name: "Standing Calf Raise",         equipment: "Machine" },
+    { name: "Seated Calf Raise",           equipment: "Machine" },
+    { name: "Donkey Calf Raise",           equipment: "Machine" },
+    { name: "Single-Leg Calf Raise",       equipment: "Bodyweight" }
+  ],
+  Abs: [
+    { name: "Hanging Leg Raise",           equipment: "Bodyweight" },
+    { name: "Cable Crunch",                equipment: "Cable" },
+    { name: "Plank",                       equipment: "Bodyweight" },
+    { name: "Ab Wheel Rollout",            equipment: "Wheel" },
+    { name: "Sit-Up",                      equipment: "Bodyweight" },
+    { name: "Russian Twist",               equipment: "Bodyweight" },
+    { name: "Bicycle Crunch",              equipment: "Bodyweight" }
+  ],
+  Cardio: [
+    { name: "Treadmill Run",               equipment: "Machine" },
+    { name: "Stationary Bike",             equipment: "Machine" },
+    { name: "Rowing Machine",              equipment: "Machine" },
+    { name: "Jump Rope",                   equipment: "Bodyweight" },
+    { name: "Stair Climber",               equipment: "Machine" },
+    { name: "Elliptical",                  equipment: "Machine" }
+  ]
+};
+
+function getMuscleColor(muscleKey){
+  const m = MUSCLE_GROUPS.find(g => g.key === muscleKey);
+  return m ? m.color : "#8d8d95";
+}
+
+</script>
+<script>
+
+/* ==========================================================================
+   IRONLOG — Gym Management System
+   Members, membership plans, payments, attendance, and trainers.
+   Fully local — stored under its own localStorage key, on-device only.
+   ========================================================================== */
+const GymStore = (function(){
+  const KEY = "ironlog_gym_v1";
+  const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+
+  function defaultDB(){
+    return { members: [], plans: [], payments: [], attendance: {}, trainers: [] };
+  }
+  function load(){
+    try{
+      const raw = localStorage.getItem(KEY);
+      if(raw) return JSON.parse(raw);
+    }catch(e){}
+    return defaultDB();
+  }
+  let db = load();
+  function save(){
+    try{ localStorage.setItem(KEY, JSON.stringify(db)); return true; }
+    catch(e){ return false; }
+  }
+  function todayStr(d = new Date()){
+    return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,'0')+"-"+String(d.getDate()).padStart(2,'0');
+  }
+  function addDays(dateStr, days){
+    const d = new Date(dateStr+"T00:00:00");
+    d.setDate(d.getDate()+days);
+    return todayStr(d);
+  }
+  function replaceDB(newDB){
+    db = Object.assign(defaultDB(), newDB);
+    save();
+  }
+  function eraseAll(){
+    localStorage.removeItem(KEY);
+    db = defaultDB();
+    save();
+  }
+  return { get db(){ return db; }, uid, todayStr, addDays, save, replaceDB, eraseAll };
+})();
+window.GymStore = GymStore;
+
+(function(){
+  "use strict";
+  const $ = (sel, el=document) => el.querySelector(sel);
+  const $all = (sel, el=document) => Array.from(el.querySelectorAll(sel));
+  const { uid, todayStr, addDays, save } = GymStore;
+  function db(){ return GymStore.db; }
+  function escapeHtml(s){ const d = document.createElement("div"); d.textContent = s ?? ""; return d.innerHTML; }
+
+  let attDate = todayStr();
+  let editingMemberId = null;
+
+  function showToast(msg){
+    const t = $("#toast");
+    if(!t) return;
+    t.textContent = msg;
+    t.classList.add("show");
+    setTimeout(()=>t.classList.remove("show"), 1800);
+  }
+
+  // ---------- Wire up the Gym tab entry ----------
+  const gymTabBtn = $('.tabbar .tab[data-tab="sec-gym"]');
+  if(gymTabBtn){
+    gymTabBtn.addEventListener("click", ()=> renderAll());
+  }
+
+  // ---------- Sub-nav ----------
+  $all(".gym-tab").forEach(btn=>{
+    btn.addEventListener("click", ()=>{
+      $all(".gym-tab").forEach(b=>b.classList.remove("active"));
+      btn.classList.add("active");
+      $all(".gym-panel").forEach(p=>p.classList.remove("active"));
+      $("#gym-"+btn.dataset.gym).classList.add("active");
+      renderAll();
+    });
+  });
+
+  function memberStatus(m){
+    if(!m.membershipEnd) return "noplan";
+    return m.membershipEnd >= todayStr() ? "active" : "expired";
+  }
+  function daysUntil(dateStr){
+    const a = new Date(todayStr()+"T00:00:00");
+    const b = new Date(dateStr+"T00:00:00");
+    return Math.round((b-a)/86400000);
+  }
+
+  function renderAll(){
+    renderDashboard();
+    renderMembers();
+    renderPlans();
+    renderPayments();
+    renderAttendance();
+    renderTrainers();
+    populatePlanSelect();
+    populateMemberSelect();
+  }
+
+  // ---------- Dashboard ----------
+  function renderDashboard(){
+    const members = db().members;
+    const active = members.filter(m=>memberStatus(m)==="active").length;
+    const expired = members.filter(m=>memberStatus(m)==="expired").length;
+    $("#gymTotalMembers").textContent = members.length;
+    $("#gymActiveMembers").textContent = active;
+    $("#gymExpiredMembers").textContent = expired;
+
+    const todayCheckins = (db().attendance[todayStr()] || []).length;
+    $("#gymTodayCheckins").textContent = todayCheckins;
+
+    const cutoff = new Date(); cutoff.setDate(cutoff.getDate()-30);
+    const revenue = db().payments.filter(p => new Date(p.date) >= cutoff).reduce((a,p)=>a+Number(p.amount||0),0);
+    $("#gymMonthRevenue").textContent = revenue.toLocaleString();
+
+    const expiring = members.filter(m => m.membershipEnd && daysUntil(m.membershipEnd) >= 0 && daysUntil(m.membershipEnd) <= 7);
+    $("#gymExpiringSoon").textContent = expiring.length;
+
+    const list = $("#gymExpiringList");
+    list.innerHTML = "";
+    if(!expiring.length){
+      list.innerHTML = `<div class="empty-state" style="padding:20px 10px;"><p>No memberships expiring in the next 7 days.</p></div>`;
+      return;
+    }
+    expiring.sort((a,b)=> a.membershipEnd < b.membershipEnd ? -1:1).forEach(m=>{
+      const row = document.createElement("div");
+      row.className = "member-card";
+      const d = daysUntil(m.membershipEnd);
+      row.innerHTML = `
+        <div class="member-avatar">${m.photo ? `<img src="${m.photo}">` : escapeHtml((m.name||"?")[0].toUpperCase())}</div>
+        <div class="member-info"><div class="mn">${escapeHtml(m.name)}</div><div class="mp">Expires in ${d} day${d===1?"":"s"}</div></div>
+        <span class="status-badge active">ACTIVE</span>
+      `;
+      row.addEventListener("click", ()=> openMemberDetail(m.id));
+      list.appendChild(row);
+    });
+  }
+
+  // ---------- Members ----------
+  function planName(planId){
+    const p = db().plans.find(x=>x.id===planId);
+    return p ? p.name : "";
+  }
+
+  function renderMembers(filter){
+    filter = (filter ?? $("#memberSearch").value ?? "").toLowerCase();
+    const list = $("#memberList");
+    list.innerHTML = "";
+    const members = db().members.filter(m =>
+      m.name.toLowerCase().includes(filter) || (m.phone||"").includes(filter)
+    );
+    $("#gymMemberCount").textContent = db().members.length;
+    if(!members.length){
+      list.innerHTML = `<div class="empty-state" style="padding:30px 10px;"><div class="big">👤</div><p>No members yet. Add your first member to get started.</p></div>`;
+      return;
+    }
+    members.forEach(m=>{
+      const status = memberStatus(m);
+      const row = document.createElement("div");
+      row.className = "member-card";
+      row.innerHTML = `
+        <div class="member-avatar">${m.photo ? `<img src="${m.photo}">` : escapeHtml((m.name||"?")[0].toUpperCase())}</div>
+        <div class="member-info">
+          <div class="mn">${escapeHtml(m.name)}</div>
+          <div class="mp">${escapeHtml(m.phone||"")}${m.planId ? " • "+escapeHtml(planName(m.planId)) : ""}</div>
+        </div>
+        <span class="status-badge ${status}">${status === "noplan" ? "NO PLAN" : status.toUpperCase()}</span>
+      `;
+      row.addEventListener("click", ()=> openMemberDetail(m.id));
+      list.appendChild(row);
+    });
+  }
+  $("#memberSearch").addEventListener("input", (e)=> renderMembers(e.target.value.toLowerCase()));
+
+  const memberModal = $("#memberModal");
+  $("#addMemberBtn").addEventListener("click", ()=>{
+    editingMemberId = null;
+    $("#memberModalTitle").textContent = "Add Member";
+    $("#memberNameInput").value = "";
+    $("#memberPhoneInput").value = "";
+    $("#memberEmailInput").value = "";
+    $("#memberJoinInput").value = todayStr();
+    $("#memberPlanInput").value = "";
+    $("#memberNotesInput").value = "";
+    $("#memberPhotoLabel").dataset.photo = "";
+    $("#memberPhotoLabel").textContent = "📷 ADD PHOTO (OPTIONAL)";
+    memberModal.classList.add("show");
+  });
+  $("#cancelMember").addEventListener("click", ()=> memberModal.classList.remove("show"));
+  memberModal.addEventListener("click",(e)=>{ if(e.target===memberModal) memberModal.classList.remove("show"); });
+
+  $("#memberPhotoInput").addEventListener("change", (e)=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev)=>{
+      compressPhoto(ev.target.result, (dataUrl)=>{
+        $("#memberPhotoLabel").dataset.photo = dataUrl;
+        $("#memberPhotoLabel").textContent = "✓ PHOTO ADDED";
+      });
+    };
+    reader.readAsDataURL(file);
+  });
+
+  function compressPhoto(dataUrl, cb){
+    const img = new Image();
+    img.onload = ()=>{
+      const maxDim = 300;
+      let {width,height} = img;
+      if(width>maxDim || height>maxDim){
+        const r = Math.min(maxDim/width, maxDim/height);
+        width = Math.round(width*r); height = Math.round(height*r);
+      }
+      const c = document.createElement("canvas");
+      c.width=width; c.height=height;
+      c.getContext("2d").drawImage(img,0,0,width,height);
+      cb(c.toDataURL("image/jpeg",0.8));
+    };
+    img.onerror = ()=> cb(dataUrl);
+    img.src = dataUrl;
+  }
+
+  function populatePlanSelect(){
+    const sel = $("#memberPlanInput");
+    const current = sel.value;
+    sel.innerHTML = `<option value="">No plan</option>` + db().plans.map(p=>`<option value="${p.id}">${escapeHtml(p.name)} (${p.durationDays}d — ${Number(p.price).toLocaleString()})</option>`).join("");
+    sel.value = current;
+  }
+  function populateMemberSelect(){
+    const sel = $("#paymentMemberInput");
+    const current = sel.value;
+    sel.innerHTML = `<option value="">Select member</option>` + db().members.map(m=>`<option value="${m.id}">${escapeHtml(m.name)}</option>`).join("");
+    sel.value = current;
+  }
+
+  $("#confirmMember").addEventListener("click", ()=>{
+    const name = $("#memberNameInput").value.trim();
+    if(!name){ showToast("Enter member name"); return; }
+    const planId = $("#memberPlanInput").value || null;
+    const joinDate = $("#memberJoinInput").value || todayStr();
+    const plan = planId ? db().plans.find(p=>p.id===planId) : null;
+
+    if(editingMemberId){
+      const m = db().members.find(x=>x.id===editingMemberId);
+      m.name = name;
+      m.phone = $("#memberPhoneInput").value.trim();
+      m.email = $("#memberEmailInput").value.trim();
+      m.notes = $("#memberNotesInput").value.trim();
+      m.joinDate = joinDate;
+      if($("#memberPhotoLabel").dataset.photo) m.photo = $("#memberPhotoLabel").dataset.photo;
+      if(planId !== m.planId){
+        m.planId = planId;
+        m.membershipStart = joinDate;
+        m.membershipEnd = plan ? addDays(joinDate, plan.durationDays) : null;
+      }
+      showToast("Member updated");
+    } else {
+      const m = {
+        id: uid(), name,
+        phone: $("#memberPhoneInput").value.trim(),
+        email: $("#memberEmailInput").value.trim(),
+        notes: $("#memberNotesInput").value.trim(),
+        photo: $("#memberPhotoLabel").dataset.photo || "",
+        joinDate,
+        planId,
+        membershipStart: planId ? joinDate : null,
+        membershipEnd: plan ? addDays(joinDate, plan.durationDays) : null
+      };
+      db().members.push(m);
+      showToast("Member added");
+    }
+    save();
+    memberModal.classList.remove("show");
+    renderAll();
+  });
+
+  function openMemberDetail(memberId){
+    const m = db().members.find(x=>x.id===memberId);
+    if(!m) return;
+    $("#detailMemberName").textContent = m.name;
+    const status = memberStatus(m);
+    const payments = db().payments.filter(p=>p.memberId===memberId).sort((a,b)=> b.date < a.date ? -1:1);
+    const attendanceCount = Object.values(db().attendance).filter(list => list.includes(memberId)).length;
+
+    $("#memberDetailBody").innerHTML = `
+      <div class="demo-meta">
+        <span class="status-badge ${status}" style="font-size:10px;">${status==="noplan"?"NO PLAN":status.toUpperCase()}</span>
+        ${m.planId ? `<span>${escapeHtml(planName(m.planId))}</span>` : ""}
+      </div>
+      <div class="detail-stat-row"><span class="dsl">Phone</span><span>${escapeHtml(m.phone||"—")}</span></div>
+      <div class="detail-stat-row"><span class="dsl">Email</span><span>${escapeHtml(m.email||"—")}</span></div>
+      <div class="detail-stat-row"><span class="dsl">Joined</span><span>${escapeHtml(m.joinDate||"—")}</span></div>
+      <div class="detail-stat-row"><span class="dsl">Membership ends</span><span>${escapeHtml(m.membershipEnd||"—")}</span></div>
+      <div class="detail-stat-row"><span class="dsl">Total visits</span><span>${attendanceCount}</span></div>
+      ${m.notes ? `<div class="detail-stat-row"><span class="dsl">Notes</span><span style="text-align:right;max-width:60%;">${escapeHtml(m.notes)}</span></div>` : ""}
+      <div class="section-title" style="margin-top:16px;"><h2 style="font-size:13px;">Payment History</h2></div>
+      ${payments.length ? payments.map(p=>`
+        <div class="payment-item">
+          <div class="pay-info"><div class="pn">${escapeHtml(p.method)}${p.note ? " • "+escapeHtml(p.note):""}</div><div class="pd">${p.date}</div></div>
+          <div class="pay-amt">${Number(p.amount).toLocaleString()}</div>
+        </div>`).join("") : `<div class="empty-state" style="padding:16px 10px;"><p>No payments recorded yet.</p></div>`}
+      <div class="detail-actions">
+        <button class="btn btn-ghost" id="detailEditBtn">EDIT</button>
+        ${m.planId ? `<button class="btn btn-primary" id="detailRenewBtn">RENEW</button>` : ""}
+        <button class="btn btn-ghost" id="detailDeleteBtn" style="color:var(--rust);border-color:var(--rust);">DELETE</button>
+      </div>
+    `;
+    $("#detailEditBtn").addEventListener("click", ()=>{
+      editingMemberId = memberId;
+      $("#memberModalTitle").textContent = "Edit Member";
+      $("#memberNameInput").value = m.name;
+      $("#memberPhoneInput").value = m.phone||"";
+      $("#memberEmailInput").value = m.email||"";
+      $("#memberJoinInput").value = m.joinDate||todayStr();
+      $("#memberPlanInput").value = m.planId||"";
+      $("#memberNotesInput").value = m.notes||"";
+      $("#memberPhotoLabel").dataset.photo = "";
+      $("#memberPhotoLabel").textContent = m.photo ? "✓ PHOTO ON FILE (tap to replace)" : "📷 ADD PHOTO (OPTIONAL)";
+      $("#memberDetailModal").classList.remove("show");
+      memberModal.classList.add("show");
+    });
+    const renewBtn = $("#detailRenewBtn");
+    if(renewBtn){
+      renewBtn.addEventListener("click", ()=>{
+        const plan = db().plans.find(p=>p.id===m.planId);
+        if(!plan) return;
+        const base = (m.membershipEnd && m.membershipEnd > todayStr()) ? m.membershipEnd : todayStr();
+        m.membershipEnd = addDays(base, plan.durationDays);
+        save();
+        showToast("Membership renewed to "+m.membershipEnd);
+        $("#memberDetailModal").classList.remove("show");
+        renderAll();
+      });
+    }
+    $("#detailDeleteBtn").addEventListener("click", ()=>{
+      if(confirm(`Delete ${m.name}? This also removes their payment and attendance history.`)){
+        const idx = db().members.findIndex(x=>x.id===memberId);
+        db().members.splice(idx,1);
+        db().payments = db().payments.filter(p=>p.memberId!==memberId);
+        Object.keys(db().attendance).forEach(d=>{
+          db().attendance[d] = db().attendance[d].filter(id=>id!==memberId);
+        });
+        save();
+        $("#memberDetailModal").classList.remove("show");
+        renderAll();
+        showToast("Member deleted");
+      }
+    });
+    $("#memberDetailModal").classList.add("show");
+  }
+  $("#closeMemberDetail").addEventListener("click", ()=> $("#memberDetailModal").classList.remove("show"));
+  $("#memberDetailModal").addEventListener("click",(e)=>{ if(e.target===$("#memberDetailModal")) $("#memberDetailModal").classList.remove("show"); });
+
+  // ---------- Plans ----------
+  function renderPlans(){
+    const list = $("#planList");
+    list.innerHTML = "";
+    if(!db().plans.length){
+      list.innerHTML = `<div class="empty-state" style="padding:30px 10px;"><div class="big">📋</div><p>No membership plans yet. Add one like "Monthly" or "Quarterly".</p></div>`;
+      return;
+    }
+    db().plans.forEach(p=>{
+      const memberCount = db().members.filter(m=>m.planId===p.id).length;
+      const row = document.createElement("div");
+      row.className = "plan-card";
+      row.innerHTML = `
+        <div><div class="pc-name">${escapeHtml(p.name)}</div><div class="pc-meta">${p.durationDays} days • ${Number(p.price).toLocaleString()} • ${memberCount} member${memberCount===1?"":"s"}</div></div>
+        <div class="pc-actions"><button class="del-plan danger">✕</button></div>
+      `;
+      row.querySelector(".del-plan").addEventListener("click", ()=>{
+        if(confirm(`Delete plan "${p.name}"? Members on this plan will keep their current membership dates but the plan will show as unassigned.`)){
+          db().plans = db().plans.filter(x=>x.id!==p.id);
+          db().members.forEach(m=>{ if(m.planId===p.id) m.planId = null; });
+          save(); renderAll();
+        }
+      });
+      list.appendChild(row);
+    });
+  }
+  const planModal = $("#planModal");
+  $("#addPlanBtn").addEventListener("click", ()=>{
+    $("#planNameInput").value = ""; $("#planDurationInput").value = ""; $("#planPriceInput").value = "";
+    planModal.classList.add("show");
+  });
+  $("#cancelPlan").addEventListener("click", ()=> planModal.classList.remove("show"));
+  planModal.addEventListener("click",(e)=>{ if(e.target===planModal) planModal.classList.remove("show"); });
+  $("#confirmPlan").addEventListener("click", ()=>{
+    const name = $("#planNameInput").value.trim();
+    const duration = parseInt($("#planDurationInput").value);
+    const price = parseFloat($("#planPriceInput").value) || 0;
+    if(!name || !duration){ showToast("Enter a plan name and duration"); return; }
+    db().plans.push({ id: uid(), name, durationDays: duration, price });
+    save();
+    planModal.classList.remove("show");
+    renderAll();
+    showToast("Plan added");
+  });
+
+  // ---------- Payments ----------
+  function renderPayments(){
+    const list = $("#paymentList");
+    list.innerHTML = "";
+    const payments = [...db().payments].sort((a,b)=> b.date < a.date ? -1:1).slice(0,100);
+    $("#paymentCount").textContent = db().payments.length;
+    if(!payments.length){
+      list.innerHTML = `<div class="empty-state" style="padding:30px 10px;"><div class="big">💳</div><p>No payments recorded yet.</p></div>`;
+      return;
+    }
+    payments.forEach(p=>{
+      const m = db().members.find(x=>x.id===p.memberId);
+      const row = document.createElement("div");
+      row.className = "payment-item";
+      row.innerHTML = `
+        <div class="pay-info"><div class="pn">${escapeHtml(m ? m.name : "Unknown member")}</div><div class="pd">${p.date} • ${escapeHtml(p.method)}${p.note?" • "+escapeHtml(p.note):""}</div></div>
+        <div class="pay-amt">${Number(p.amount).toLocaleString()}</div>
+      `;
+      list.appendChild(row);
+    });
+  }
+  const paymentModal = $("#paymentModal");
+  $("#addPaymentBtn").addEventListener("click", ()=>{
+    populateMemberSelect();
+    $("#paymentMemberInput").value = "";
+    $("#paymentAmountInput").value = "";
+    $("#paymentDateInput").value = todayStr();
+    $("#paymentMethodInput").value = "Cash";
+    $("#paymentNoteInput").value = "";
+    $("#paymentRenewInput").checked = true;
+    paymentModal.classList.add("show");
+  });
+  $("#cancelPayment").addEventListener("click", ()=> paymentModal.classList.remove("show"));
+  paymentModal.addEventListener("click",(e)=>{ if(e.target===paymentModal) paymentModal.classList.remove("show"); });
+  $("#confirmPayment").addEventListener("click", ()=>{
+    const memberId = $("#paymentMemberInput").value;
+    const amount = parseFloat($("#paymentAmountInput").value);
+    if(!memberId){ showToast("Select a member"); return; }
+    if(!amount || amount<=0){ showToast("Enter a valid amount"); return; }
+    const date = $("#paymentDateInput").value || todayStr();
+    const method = $("#paymentMethodInput").value;
+    const note = $("#paymentNoteInput").value.trim();
+    db().payments.push({ id: uid(), memberId, amount, date, method, note });
+
+    if($("#paymentRenewInput").checked){
+      const m = db().members.find(x=>x.id===memberId);
+      if(m && m.planId){
+        const plan = db().plans.find(p=>p.id===m.planId);
+        if(plan){
+          const base = (m.membershipEnd && m.membershipEnd > date) ? m.membershipEnd : date;
+          m.membershipEnd = addDays(base, plan.durationDays);
+        }
+      }
+    }
+    save();
+    paymentModal.classList.remove("show");
+    renderAll();
+    showToast("Payment recorded");
+  });
+
+  // ---------- Attendance ----------
+  function fmtDateDisplay(dstr){
+    const d = new Date(dstr+"T00:00:00");
+    return d.toLocaleDateString(undefined, { weekday:'short', month:'short', day:'numeric' });
+  }
+  function renderAttendance(filter){
+    filter = (filter ?? $("#attendanceSearch").value ?? "").toLowerCase();
+    $("#attDateDisplay").textContent = fmtDateDisplay(attDate) + (attDate===todayStr() ? " (Today)" : "");
+    const checkedIn = db().attendance[attDate] || [];
+    $("#attendanceCountPill").textContent = checkedIn.length + " checked in";
+
+    const list = $("#attendanceList");
+    list.innerHTML = "";
+    const members = db().members.filter(m => m.name.toLowerCase().includes(filter));
+    if(!members.length){
+      list.innerHTML = `<div class="empty-state" style="padding:30px 10px;"><p>${db().members.length ? "No matches." : "Add members first to track attendance."}</p></div>`;
+      return;
+    }
+    members.forEach(m=>{
+      const isIn = checkedIn.includes(m.id);
+      const row = document.createElement("div");
+      row.className = "member-card";
+      row.style.cursor = "pointer";
+      row.innerHTML = `
+        <div class="member-avatar">${m.photo ? `<img src="${m.photo}">` : escapeHtml((m.name||"?")[0].toUpperCase())}</div>
+        <div class="member-info"><div class="mn">${escapeHtml(m.name)}</div><div class="mp">${escapeHtml(m.phone||"")}</div></div>
+        <button class="chk" style="width:30px;height:30px;${isIn ? 'background:var(--green);border-color:var(--green);color:#12210d;' : ''}">${isIn?'✓':''}</button>
+      `;
+      row.querySelector(".chk").addEventListener("click", (e)=>{
+        e.stopPropagation();
+        toggleCheckin(m.id);
+      });
+      list.appendChild(row);
+    });
+  }
+  function toggleCheckin(memberId){
+    if(!db().attendance[attDate]) db().attendance[attDate] = [];
+    const arr = db().attendance[attDate];
+    const idx = arr.indexOf(memberId);
+    if(idx === -1) arr.push(memberId); else arr.splice(idx,1);
+    save();
+    renderAttendance();
+  }
+  $("#attendanceSearch").addEventListener("input",(e)=> renderAttendance(e.target.value.toLowerCase()));
+  $("#attPrevDay").addEventListener("click", ()=>{ attDate = addDays(attDate,-1); renderAttendance(); });
+  $("#attNextDay").addEventListener("click", ()=>{ attDate = addDays(attDate,1); renderAttendance(); });
+
+  // ---------- Trainers ----------
+  function renderTrainers(){
+    const list = $("#trainerList");
+    list.innerHTML = "";
+    if(!db().trainers.length){
+      list.innerHTML = `<div class="empty-state" style="padding:30px 10px;"><div class="big">🧑‍🏫</div><p>No trainers added yet.</p></div>`;
+      return;
+    }
+    db().trainers.forEach(t=>{
+      const row = document.createElement("div");
+      row.className = "trainer-card";
+      row.innerHTML = `
+        <div><div class="tc-name">${escapeHtml(t.name)}</div><div class="tc-meta">${escapeHtml(t.phone||"")}${t.specialty ? " • "+escapeHtml(t.specialty):""}</div></div>
+        <button class="del-trainer danger" style="background:var(--surface-2);border:1px solid var(--rust);color:var(--rust);width:28px;height:28px;border-radius:2px;cursor:pointer;">✕</button>
+      `;
+      row.querySelector(".del-trainer").addEventListener("click", ()=>{
+        db().trainers = db().trainers.filter(x=>x.id!==t.id);
+        save(); renderTrainers();
+      });
+      list.appendChild(row);
+    });
+  }
+  const trainerModal = $("#trainerModal");
+  $("#addTrainerBtn").addEventListener("click", ()=>{
+    $("#trainerNameInput").value = ""; $("#trainerPhoneInput").value = ""; $("#trainerSpecialtyInput").value = "";
+    trainerModal.classList.add("show");
+  });
+  $("#cancelTrainer").addEventListener("click", ()=> trainerModal.classList.remove("show"));
+  trainerModal.addEventListener("click",(e)=>{ if(e.target===trainerModal) trainerModal.classList.remove("show"); });
+  $("#confirmTrainer").addEventListener("click", ()=>{
+    const name = $("#trainerNameInput").value.trim();
+    if(!name){ showToast("Enter trainer name"); return; }
+    db().trainers.push({ id: uid(), name, phone: $("#trainerPhoneInput").value.trim(), specialty: $("#trainerSpecialtyInput").value.trim() });
+    save();
+    trainerModal.classList.remove("show");
+    renderTrainers();
+    showToast("Trainer added");
+  });
+
+  window.addEventListener("ironlog:gym-import", renderAll);
+
+  const eraseGymBtn = document.getElementById("eraseGymBtn");
+  if(eraseGymBtn){
+    eraseGymBtn.addEventListener("click", ()=>{
+      if(confirm("This will permanently delete all members, plans, payments, attendance, and trainers. Continue?")){
+        GymStore.eraseAll();
+        renderAll();
+        showToast("Gym data erased");
+      }
+    });
+  }
+
+  // Initial render for whichever gym sub-tab is active
+  renderAll();
+})();
+
+</script>
+<script>
+/* ==========================================================================
+   IRONLOG Admin — Custom Exercise Manager
+   Stored under a shared localStorage key so the Member app (same origin)
+   can read and display these exercises + GIFs automatically.
+   ========================================================================== */
+(function(){
+  "use strict";
+  const $ = (sel, el=document) => el.querySelector(sel);
+  const KEY = "ironlog_custom_exercises_v1";
+  const uid = () => Date.now().toString(36) + Math.random().toString(36).slice(2,7);
+  function escapeHtml(s){ const d = document.createElement("div"); d.textContent = s ?? ""; return d.innerHTML; }
+  function showToast(msg){
+    const t = $("#toast"); if(!t) return;
+    t.textContent = msg; t.classList.add("show");
+    setTimeout(()=>t.classList.remove("show"), 1800);
+  }
+
+  function load(){
+    try{ const raw = localStorage.getItem(KEY); return raw ? JSON.parse(raw) : []; }
+    catch(e){ return []; }
+  }
+  let list = load();
+  function persist(){
+    try{ localStorage.setItem(KEY, JSON.stringify(list)); return true; }
+    catch(e){ showToast("Storage full — try removing a GIF or two"); return false; }
+  }
+
+  let editingId = null;
+  let pendingGif = "";
+
+  function populateMuscleSelect(){
+    const sel = $("#exFormMuscle");
+    sel.innerHTML = MUSCLE_GROUPS.map(m=>`<option value="${m.key}">${m.key}</option>`).join("");
+  }
+
+  function renderList(filter){
+    filter = (filter||"").toLowerCase();
+    const wrap = $("#customExerciseList");
+    wrap.innerHTML = "";
+    $("#customExCount").textContent = list.length;
+    const filtered = list.filter(ex => ex.name.toLowerCase().includes(filter));
+    if(!filtered.length){
+      wrap.innerHTML = `<div class="empty-state" style="padding:30px 10px;"><div class="big">🎞️</div><p>${list.length ? "No matches." : "No custom exercises yet. Add your first one with a GIF below."}</p></div>`;
+      return;
+    }
+    filtered.forEach(ex=>{
+      const row = document.createElement("div");
+      row.className = "admin-ex-card";
+      row.innerHTML = `
+        <div class="admin-ex-thumb">${ex.gif ? `<img src="${ex.gif}">` : "🏋️"}</div>
+        <div class="admin-ex-info">
+          <div class="an">${escapeHtml(ex.name)}</div>
+          <div class="am">${escapeHtml(ex.muscle)}${ex.equipment ? " • "+escapeHtml(ex.equipment) : ""}</div>
+        </div>
+        <div class="admin-ex-actions">
+          <button class="edit-ex">✎</button>
+          <button class="del-ex danger">✕</button>
+        </div>
+      `;
+      row.querySelector(".edit-ex").addEventListener("click", ()=> openForm(ex.id));
+      row.querySelector(".del-ex").addEventListener("click", ()=>{
+        if(confirm(`Delete "${ex.name}"? This removes it from the member app too.`)){
+          list = list.filter(x=>x.id!==ex.id);
+          persist(); renderList($("#exManageSearch").value);
+        }
+      });
+      wrap.appendChild(row);
+    });
+  }
+  $("#exManageSearch").addEventListener("input", (e)=> renderList(e.target.value));
+
+  const exModal = $("#exerciseFormModal");
+  function resetForm(){
+    $("#exFormName").value = "";
+    $("#exFormEquipment").value = "";
+    $("#exFormInstructions").value = "";
+    $("#exGifPreview").innerHTML = "No GIF selected yet";
+    pendingGif = "";
+  }
+  function openForm(id){
+    populateMuscleSelect();
+    if(id){
+      const ex = list.find(x=>x.id===id);
+      editingId = id;
+      $("#exFormTitle").textContent = "Edit Exercise";
+      $("#exFormName").value = ex.name;
+      $("#exFormMuscle").value = ex.muscle;
+      $("#exFormEquipment").value = ex.equipment || "";
+      $("#exFormInstructions").value = (ex.instructions||[]).join("\n");
+      $("#exGifPreview").innerHTML = ex.gif ? `<img src="${ex.gif}">` : "No GIF selected yet";
+      pendingGif = ex.gif || "";
+    } else {
+      editingId = null;
+      $("#exFormTitle").textContent = "Add Exercise";
+      resetForm();
+    }
+    exModal.classList.add("show");
+  }
+  $("#addCustomExBtn").addEventListener("click", ()=> openForm(null));
+  $("#cancelExForm").addEventListener("click", ()=> exModal.classList.remove("show"));
+  exModal.addEventListener("click",(e)=>{ if(e.target===exModal) exModal.classList.remove("show"); });
+
+  $("#exGifInput").addEventListener("change", (e)=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    if(file.size > 4*1024*1024){
+      showToast("File too large — please use a GIF/image under 4MB");
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (ev)=>{
+      pendingGif = ev.target.result; // keep original bytes so GIF animation is preserved
+      $("#exGifPreview").innerHTML = `<img src="${pendingGif}">`;
+    };
+    reader.readAsDataURL(file);
+  });
+
+  $("#confirmExForm").addEventListener("click", ()=>{
+    const name = $("#exFormName").value.trim();
+    if(!name){ showToast("Enter an exercise name"); return; }
+    const muscle = $("#exFormMuscle").value;
+    const equipment = $("#exFormEquipment").value.trim();
+    const instructions = $("#exFormInstructions").value.split("\n").map(s=>s.trim()).filter(Boolean);
+
+    if(editingId){
+      const ex = list.find(x=>x.id===editingId);
+      ex.name = name; ex.muscle = muscle; ex.equipment = equipment; ex.instructions = instructions;
+      if(pendingGif) ex.gif = pendingGif;
+      showToast("Exercise updated");
+    } else {
+      list.push({ id: uid(), name, muscle, equipment, instructions, gif: pendingGif });
+      showToast("Exercise added");
+    }
+    persist();
+    exModal.classList.remove("show");
+    renderList($("#exManageSearch").value);
+  });
+
+  // ---------- Combined backup export/import ----------
+  function todayStr(){
+    const d = new Date();
+    return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,'0')+"-"+String(d.getDate()).padStart(2,'0');
+  }
+  $("#adminExportBtn").addEventListener("click", ()=>{
+    const combined = { gym: (window.GymStore ? window.GymStore.db : null), customExercises: list };
+    const blob = new Blob([JSON.stringify(combined, null, 2)], {type:"application/json"});
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = `ironlog-admin-backup-${todayStr()}.json`;
+    document.body.appendChild(a); a.click(); a.remove();
+    URL.revokeObjectURL(url);
+    showToast("Backup downloaded");
+  });
+  $("#adminImportBtn").addEventListener("click", ()=> $("#adminImportInput").click());
+  $("#adminImportInput").addEventListener("change", (e)=>{
+    const file = e.target.files[0];
+    if(!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev)=>{
+      try{
+        const parsed = JSON.parse(ev.target.result);
+        if(parsed.gym && window.GymStore) window.GymStore.replaceDB(parsed.gym);
+        if(parsed.customExercises){ list = parsed.customExercises; persist(); }
+        renderList("");
+        if(window.dispatchEvent) window.dispatchEvent(new Event("ironlog:gym-import"));
+        showToast("Backup imported");
+      }catch(err){ showToast("Invalid backup file"); }
+    };
+    reader.readAsText(file);
+    e.target.value = "";
+  });
+  $("#adminEraseGymBtn").addEventListener("click", ()=>{
+    if(confirm("This permanently deletes all members, plans, payments, attendance & trainers. Continue?")){
+      if(window.GymStore) window.GymStore.eraseAll();
+      showToast("Gym data erased");
+      location.reload();
+    }
+  });
+  $("#adminEraseExBtn").addEventListener("click", ()=>{
+    if(confirm("This permanently deletes all custom exercises and their GIFs. Continue?")){
+      list = []; persist();
+      renderList("");
+      showToast("Custom exercises erased");
+    }
+  });
+
+  renderList("");
+})();
+</script>
+<script>
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('admin-sw.js').catch(()=>{});
+  }
+</script>
+</body>
+</html>
